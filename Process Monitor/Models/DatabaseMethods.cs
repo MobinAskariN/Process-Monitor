@@ -14,17 +14,17 @@ namespace Process_Monitor.Models
             _context = context;
         }
 
-        public List<ProcessData> GetProcessData()
+        public List<ProcessData> getProcessData()
         {
             List<ProcessData> p = _context.ProcessData.AsNoTracking().ToList();
             return p;
         }
-        public List<Grouping> GetGrouping()
+        public List<Grouping> getGrouping()
         {
             List<Grouping> g = _context.Grouping.AsNoTracking().ToList();
             return g;
         }
-        public List<Relations> GetRelations()
+        public List<Relations> getRelations()
         {
             List<Relations> r = _context.Relation.AsNoTracking().ToList();
             return r;
