@@ -1,1 +1,52 @@
+## Ignore Visual Studio temporary files, build results, and
+## user-specific files
+
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# VS Code and Visual Studio folders
 .vs/
+.vscode/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+# SQL Server localdb
+*.mdf
+*.ldf
+
+# SQLite
+*.db
+*.db-journal
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*~
+
+# NuGet Packages
+*.nupkg
+packages/
+project.lock.json
+project.fragment.lock.json
+
+# Publish output
+*.Publish.xml
+
+# Others
+_ReSharper*/
+*.resharper
+*.DotSettings.user
+.idea/
+*.ide/
