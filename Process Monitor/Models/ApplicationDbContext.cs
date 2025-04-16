@@ -15,7 +15,12 @@ namespace Process_Monitor.Models
         {
             base.OnModelCreating(modelBuilder);
             // You can configure relationships or keys here if necessary
+            modelBuilder.Entity<Relations>()
+                 .HasKey(r => new { r.beginning_process_id, r.ending_process_id }); // 👈 composite key
+
         }
+
+
 
         public DbSet<ProcessData> ProcessData { get; set; }
         public DbSet<Grouping> Grouping { get; set; }

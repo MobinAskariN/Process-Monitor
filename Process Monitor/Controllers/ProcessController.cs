@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.Mvc; // Use System.Web.Mvc for MVC in .NET 4.5
 using Process_Monitor.Models;
 using System.Drawing;
+using System.Diagnostics;
 
 namespace process_schematic_4._5.Controllers
 {
@@ -23,10 +24,14 @@ namespace process_schematic_4._5.Controllers
             List<Grouping> groupings = _context.getGrouping();
             List<Relations> relations = _context.getRelations();
 
+            //Debug.WriteLine(processDatas.First().process_title);
+
 
 
             // setting all things we need in our page
-            // ViewBag.elements = elements;
+            ViewBag.processData = processDatas;
+            ViewBag.grouping = groupings;
+            ViewBag.relation = relations;
             return View();
         }
 

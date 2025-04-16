@@ -24,7 +24,7 @@ namespace Process_Monitor.Models
         public int repetition_num { get; set; }
 
         [Column("متوسط زمانبری")]
-        public float average_duration { get; set; }
+        public double average_duration { get; set; }
 
         [Column("انحراف از معیار")]
         public int standard_deviation { get; set; }
@@ -34,6 +34,13 @@ namespace Process_Monitor.Models
 
         [Column("وضعیت")]
         public string status { get; set; }
+
+        [Column("توضیحات نوع اول")]
+        public string description_type1 { get; set; }
+
+        [Column("توضیحات نوع دوم")]
+        public string description_type2 { get; set; }
+
     }
 
     [Table("گروه بندی")] 
@@ -47,9 +54,10 @@ namespace Process_Monitor.Models
         public string group_title { get; set; }
 
         [Column("شناسه والد")]
-        public int parent_id { get; set; }
+        public int? parent_id { get; set; }
     }
 
+    
     [Table("ارتباطات")] 
     public class Relations
     {

@@ -1,7 +1,137 @@
-﻿
-@{
-    ViewBag.Title = "Index";
+﻿@{
+    ViewData["Title"] = "Process Monitor";
+    var processData = ViewBag.processData as List<Process_Monitor.Models.ProcessData>;
+    var grouping = ViewBag.grouping as List<Process_Monitor.Models.Grouping>;
+    var relation = ViewBag.relation as List<Process_Monitor.Models.Relations>;
+    Layout = null;
+
 }
+@using System.Web
+@using System.Linq
 
-<h2>Index</h2>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nested Nodes</title>
+    <link rel="stylesheet" href="~/Content/styles.css">
+</head>
+<body>
+    <div class="child-area">
+        <h3>Child Nodes</h3>
+        <div class="child-list">
+            @{
+                foreach (Process_Monitor.Models.ProcessData p in processData)
+                {
+                    <div class="node child" data-parent-id="parent-@p.process_group">@p.process_title</div>
+
+                }
+            }
+            @*<div class="node child" data-parent-id="parent-1">Child Node-1</div>
+                <div class="node child" data-parent-id="parent-1">Child Node-2</div>
+                <div class="node child" data-parent-id="parent-2">Child Node-3</div>
+                <div class="node child" data-parent-id="parent-2">Child Node-4</div>
+                <div class="node child" data-parent-id="parent-3">Child Node-5</div>
+                <div class="node child" data-parent-id="parent-3">Child Node-6</div>
+                <div class="node child" data-parent-id="parent-4">Child Node-7</div>
+                <div class="node child" data-parent-id="parent-4">Child Node-8</div>
+                <div class="node child" data-parent-id="parent-4">Child Node-9</div>
+                <div class="node child" data-parent-id="parent-4">Child Node-10</div>
+                <div class="node child" data-parent-id="parent-4">Child Node-11</div>
+                <div class="node child" data-parent-id="parent-5">Child Node-12</div>
+                <div class="node child" data-parent-id="parent-5">Child Node-13</div>*@
+        </div>
+    </div>
+
+    <div class="canvas">
+        <svg class="arrows" width="100%" height="100%"></svg>
+
+
+
+        @helper RenderNodes(List<Process_Monitor.Models.Grouping> items, int? parentId)
+        {
+            // Find children before the loop
+            List<Process_Monitor.Models.Grouping> children = new List<Process_Monitor.Models.Grouping>();
+            foreach (var item in items)
+            {
+                if (item.parent_id == parentId)
+                {
+                    children.Add(item);
+                }
+            }
+
+            foreach (var child in children)
+            {
+                <div class="node parent" id="parent-@child.group_id">
+                    @child.group_title
+                    @RenderNodes(items, child.group_id)
+                    <div class="resize-handle"></div>
+                </div>
+            }
+        }
+
+        @RenderNodes(grouping, null)
+
+
+        @*<div class="node parent" id="parent-1">
+                Parent Node-1
+                <div class="node parent" id="parent-2">
+                    Parent Node-2
+                    <div class="node parent" id="parent-3">
+                        Parent Node-3
+                        <div class="resize-handle"></div>
+                    </div>
+                    <div class="node parent" id="parent-4">
+                        Parent Node-4
+                        <div class="resize-handle"></div>
+                    </div>
+                    <div class="node parent" id="parent-5">
+                        Parent Node-5
+                        <div class="resize-handle"></div>
+                    </div>
+                    <div class="resize-handle"></div>
+                </div>
+                <div class="resize-handle"></div>
+            </div>*@
+
+        <div class="tooltip" id="tooltip"></div>
+        <!-- اضافه کردن modal -->
+        <div class="modal" id="modal">
+            <div class="modal-content">
+                <span class="modal-close">&times;</span>
+                <div id="modal-body"></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        window.relationships = {};
+
+        @foreach (var r in relation)
+        {
+            <text>
+            if (!window.relationships["Child Node-@r.beginning_process_id"]) window.relationships["Child Node-@r.beginning_process_id"] = [];
+            window.relationships["Child Node-@r.beginning_process_id"].push("Child Node-@r.ending_process_id");
+            </text>
+        }
+        console.log(window.relationships);
+
+        window.childNodeData = {}; // Make it global
+
+        @for (int i = 0; i < processData.Count; i++)
+        {
+            var item = processData[i];
+            var nodeKey = "Child Node-" + (processData[i].process_id);
+            <text>
+            window.childNodeData["@nodeKey"] = {
+                type1: "@item.description_type1",
+                type2: "@item.description_type2"
+            };
+            </text>
+        }
+        </script>
+
+    <script src="@Url.Content("~/Scripts/script.js")"></script>
+</body>
+</html>
