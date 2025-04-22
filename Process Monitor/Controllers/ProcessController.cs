@@ -35,5 +35,43 @@ namespace process_schematic_4._5.Controllers
             return View();
         }
 
+        [HttpPost]
+        public ActionResult UpdateCoordinates(List<ProcessUpdates> processData, List<GroupUpdates> groupData)
+        {
+            using (var db = new ApplicationDbContext())
+            {
+                foreach (var data in processData)
+                {
+                    var process = db.ProcessData.Find(data.process_id);
+                    if (process != null)
+                    {
+                        process.x = data.x;
+                        process.y = data.y;
+                    }
+                }
+
+                db.SaveChanges(); // Save all the changes at once
+            }
+
+            using (var db = new ApplicationDbContext())
+            {
+                foreach (var data in groupData)
+                {
+                    var group = db.Grouping.Find(data.group_id);
+                    if (group != null)
+                    {
+                        group.x = data.x;
+                        group.y = data.y;
+                        group.width = data.width;
+                        group.height = data.height;
+
+                    }
+                }
+
+                db.SaveChanges(); // Save all the changes at once
+            }
+
+            return Json(new { success = true });
+        }
     }
 }

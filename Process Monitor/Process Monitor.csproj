@@ -155,6 +155,7 @@
     </Compile>
     <Compile Include="Models\ApplicationDbContext.cs" />
     <Compile Include="Models\DatabaseMethods.cs" />
+    <Compile Include="Models\OtherClasses.cs" />
     <Compile Include="Models\TableModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

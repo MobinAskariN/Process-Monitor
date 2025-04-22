@@ -62,6 +62,7 @@ body {
   right: 0;
   bottom: 0;
   cursor: se-resize;
+  z-index: 999;
 }
 
 .canvas {

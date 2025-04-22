@@ -15,6 +15,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Nested Nodes</title>
     <link rel="stylesheet" href="~/Content/styles.css">
 </head>
@@ -25,28 +26,34 @@
             @{
                 foreach (Process_Monitor.Models.ProcessData p in processData)
                 {
-                    <div class="node child" data-parent-id="parent-@p.process_group">@p.process_title</div>
+                    <div class="node child" id="child-@p.process_id" data-parent-id="parent-@p.process_group">@p.process_title</div>
 
                 }
             }
             @*<div class="node child" data-parent-id="parent-1">Child Node-1</div>
-                <div class="node child" data-parent-id="parent-1">Child Node-2</div>
-                <div class="node child" data-parent-id="parent-2">Child Node-3</div>
-                <div class="node child" data-parent-id="parent-2">Child Node-4</div>
-                <div class="node child" data-parent-id="parent-3">Child Node-5</div>
-                <div class="node child" data-parent-id="parent-3">Child Node-6</div>
-                <div class="node child" data-parent-id="parent-4">Child Node-7</div>
-                <div class="node child" data-parent-id="parent-4">Child Node-8</div>
-                <div class="node child" data-parent-id="parent-4">Child Node-9</div>
-                <div class="node child" data-parent-id="parent-4">Child Node-10</div>
-                <div class="node child" data-parent-id="parent-4">Child Node-11</div>
-                <div class="node child" data-parent-id="parent-5">Child Node-12</div>
-                <div class="node child" data-parent-id="parent-5">Child Node-13</div>*@
+        <div class="node child" data-parent-id="parent-1">Child Node-2</div>
+        <div class="node child" data-parent-id="parent-2">Child Node-3</div>
+        <div class="node child" data-parent-id="parent-2">Child Node-4</div>
+        <div class="node child" data-parent-id="parent-3">Child Node-5</div>
+        <div class="node child" data-parent-id="parent-3">Child Node-6</div>
+        <div class="node child" data-parent-id="parent-4">Child Node-7</div>
+        <div class="node child" data-parent-id="parent-4">Child Node-8</div>
+        <div class="node child" data-parent-id="parent-4">Child Node-9</div>
+        <div class="node child" data-parent-id="parent-4">Child Node-10</div>
+        <div class="node child" data-parent-id="parent-4">Child Node-11</div>
+        <div class="node child" data-parent-id="parent-5">Child Node-12</div>
+        <div class="node child" data-parent-id="parent-5">Child Node-13</div>*@
         </div>
     </div>
 
     <div class="canvas">
-        <svg class="arrows" width="100%" height="100%"></svg>
+        <svg class="arrows" width="100%" height="100%">
+            <defs>
+                <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                    <polygon points="0 0, 6 2, 0 4" fill="black"></polygon>
+                </marker>
+            </defs>
+        </svg>
 
 
 
@@ -76,25 +83,25 @@
 
 
         @*<div class="node parent" id="parent-1">
-                Parent Node-1
-                <div class="node parent" id="parent-2">
-                    Parent Node-2
-                    <div class="node parent" id="parent-3">
-                        Parent Node-3
-                        <div class="resize-handle"></div>
-                    </div>
-                    <div class="node parent" id="parent-4">
-                        Parent Node-4
-                        <div class="resize-handle"></div>
-                    </div>
-                    <div class="node parent" id="parent-5">
-                        Parent Node-5
-                        <div class="resize-handle"></div>
-                    </div>
+            Parent Node-1
+            <div class="node parent" id="parent-2">
+                Parent Node-2
+                <div class="node parent" id="parent-3">
+                    Parent Node-3
+                    <div class="resize-handle"></div>
+                </div>
+                <div class="node parent" id="parent-4">
+                    Parent Node-4
+                    <div class="resize-handle"></div>
+                </div>
+                <div class="node parent" id="parent-5">
+                    Parent Node-5
                     <div class="resize-handle"></div>
                 </div>
                 <div class="resize-handle"></div>
-            </div>*@
+            </div>
+            <div class="resize-handle"></div>
+        </div>*@
 
         <div class="tooltip" id="tooltip"></div>
         <!-- اضافه کردن modal -->

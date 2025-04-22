@@ -41,6 +41,13 @@ namespace Process_Monitor.Models
         [Column("توضیحات نوع دوم")]
         public string description_type2 { get; set; }
 
+        [Column("X_Coor")]
+        public int? x { get; set; }
+
+        [Column("Y_Coor")]
+        public int? y { get; set; }
+
+
     }
 
     [Table("گروه بندی")] 
@@ -55,9 +62,22 @@ namespace Process_Monitor.Models
 
         [Column("شناسه والد")]
         public int? parent_id { get; set; }
+
+        [Column("X_Coor")]
+        public int? x { get; set; }
+
+        [Column("Y_Coor")]
+        public int? y { get; set; }
+
+        [Column("Width")]
+        public float? width { get; set; }
+
+        [Column("Height")]
+        public float? height { get; set; }
+
     }
 
-    
+
     [Table("ارتباطات")] 
     public class Relations
     {

@@ -2,7 +2,8 @@
 const relationships = {
   'Child Node-1': ['Child Node-4', 'Child Node-5'],
   'Child Node-3': ['Child Node-2'],
-  'Child Node-4': ['Child Node-2']
+  'Child Node-4': ['Child Node-2'],
+  'Child Node-5': ['Child Node-6']
 };
 
 // تعریف متغیرهای پیش‌فرض برای هر ارتباط
@@ -18,7 +19,10 @@ const relationshipVariables = {
   ],
   'Child Node-3-Child Node-2': [
     { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }
-  ]
+  ],
+  'Child Node-5-Child Node-6': [
+    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }, { v6: 'vv6' }
+  ],
 };
 
 // تعریف اطلاعات پیش‌فرض برای child-nodeها
@@ -453,7 +457,7 @@ function moveChildToParent(childNode, parentNode) {
   childNode.style.left = `${left}px`;
   childNode.style.top = `${top}px`;
   updateZIndex(childNode);
-  adjustParentSize(document.getElementById('parent-1'));
+  adjustParentSize(parentNode);
   updateArrows();
 }
 
@@ -485,6 +489,10 @@ childNodes.forEach(childNode => {
       if (parentNode && isCorrectParent(childNode, parentNode)) {
         const nodeText = childNode.textContent.trim();
         const data = childNodeData[nodeText];
+
+        console.log("Clicked node id:");
+
+
         if (data) {
           showModal(data.type1);
         }
@@ -498,6 +506,10 @@ childNodes.forEach(childNode => {
     if (parentNode && isCorrectParent(childNode, parentNode)) {
       const nodeText = childNode.textContent.trim();
       const data = childNodeData[nodeText];
+
+      console.log("Clicked node id:");
+
+
       if (data) {
         showModal(data.type2);
       }
@@ -559,10 +571,12 @@ document.getElementById('modal').addEventListener('click', (e) => {
   }
 });
 
-// تنظیم اولیه سایز و موقعیت parent-nodeها
-const rootParent = document.getElementById('parent-1');
-rootParent.style.left = '200px';
-rootParent.style.top = '150px';
-adjustParentPositions(rootParent);
-adjustParentSize(rootParent);
+// تنظیم اولیه سایز و موقعیت تمام parent-nodeها
+const rootParents = document.querySelectorAll('.canvas > .parent');
+rootParents.forEach(rootParent => {
+  rootParent.style.left = rootParent.id === 'parent-1' ? '200px' : '800px';
+  rootParent.style.top = '150px';
+  adjustParentPositions(rootParent);
+  adjustParentSize(rootParent);
+});
 updateArrows();
