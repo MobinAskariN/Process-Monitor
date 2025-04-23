@@ -88,7 +88,42 @@ namespace Process_Monitor.Models
         public int ending_process_id { get; set; }
 
         [Column("متغیرها")]
-        public string parameters { get; set; }
+        public string parameters_str { get; set; }
+
+        [NotMapped] 
+        public Dictionary<string, string> parameters { get; set; }
+
+        public void ExtractParameters()
+        {
+            string input = this.parameters_str;
+            var result = new Dictionary<string, string>();
+
+            // Remove curly braces and split by "), (" to get individual pairs
+            string cleanedInput = input.Trim('{', '}');
+            if (string.IsNullOrEmpty(cleanedInput))
+            {
+                this.parameters = result;
+                return;
+            }
+
+            var pairs = cleanedInput.Split(new string[] { "), (" }, StringSplitOptions.None);
+
+            foreach (var pair in pairs)
+            {
+                // Clean up parentheses and split by colon
+                string cleanedPair = pair.Trim('(', ')');
+                var keyValue = cleanedPair.Split(':');
+
+                if (keyValue.Length == 2)
+                {
+                    string key = keyValue[0].Trim();
+                    string value = keyValue[1].Trim();
+                    result[key] = value;
+                }
+            }
+
+            this.parameters = result;
+        }
     }
 
 

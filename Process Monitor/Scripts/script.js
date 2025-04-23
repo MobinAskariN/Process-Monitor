@@ -7,6 +7,7 @@ const relationships = window.relationships;
 //};
 
 // تعریف متغیرهای پیش‌فرض برای هر ارتباط
+//const relationshipVariables = window.relationshipVariables;
 const relationshipVariables = {
   'Child Node-1-Child Node-5': [
     { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }, { v6: 'vv6' }
@@ -319,7 +320,6 @@ function drawArrow(fromNode, toNode) {
     return { path, fromNode, toNode };
 }
 
-// تابع برای به‌روزرسانی فلش‌ها
 function updateArrows() {
     const svg = document.querySelector('.arrows');
     svg.innerHTML = ''; // پاک کردن SVG
@@ -328,12 +328,12 @@ function updateArrows() {
     const arrowData = [];
 
     childNodesInCanvas.forEach(fromNode => {
-        const fromText = fromNode.textContent.trim();
-        if (relationships[fromText]) {
-            relationships[fromText].forEach(toText => {
-                const toNode = childNodesInCanvas.find(n => n.textContent.trim() === toText);
+        const fromId = fromNode.id; // استفاده از id به‌جای textContent
+        if (relationships[fromId]) {
+            relationships[fromId].forEach(toId => {
+                const toNode = childNodesInCanvas.find(n => n.id === toId);
                 if (toNode) {
-                    const arrowKey = `${fromText}-${toText}`;
+                    const arrowKey = `${fromId}-${toId}`;
                     let arrow = arrowElements.get(arrowKey);
                     if (!arrow) {
                         arrow = drawArrow(fromNode, toNode);
@@ -402,7 +402,7 @@ function updateArrows() {
 
     const tooltip = document.getElementById('tooltip');
     arrowData.forEach(arrow => {
-        const arrowKey = `${arrow.fromNode.textContent.trim()}-${arrow.toNode.textContent.trim()}`;
+        const arrowKey = `${arrow.fromNode.id}-${arrow.toNode.id}`; // استفاده از id به‌جای textContent
         let pathElement = arrowElements.get(arrowKey) ?.pathElement;
         if (!pathElement) {
             pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -485,14 +485,8 @@ childNodes.forEach(childNode => {
         clickTimeout = setTimeout(() => {
             const parentNode = childNode.closest('.parent');
             if (parentNode && isCorrectParent(childNode, parentNode)) {
-                const nodeId = childNode.id; // e.g., "child-5"
-                const key = nodeId.replace("child-", "Child Node-"); // "Child Node-5"
+                const key = childNode.id; // e.g., "child-5"
                 const data = childNodeData[key];
-
-                console.log("Clicked node id:", nodeId);
-                console.log("Data found:", data);
-
-
                 if (data) {
                     showModal(data.type1);
                 }
@@ -504,14 +498,8 @@ childNodes.forEach(childNode => {
         e.preventDefault();
         const parentNode = childNode.closest('.parent');
         if (parentNode && isCorrectParent(childNode, parentNode)) {
-            const nodeId = childNode.id; // e.g., "child-5"
-            const key = nodeId.replace("child-", "Child Node-"); // "Child Node-5"
+            const key = childNode.id; // e.g., "child-5"
             const data = childNodeData[key];
-
-            console.log("Clicked node id:", nodeId);
-console.log("Data found:", data);
-
-
             if (data) {
                 showModal(data.type2);
             }

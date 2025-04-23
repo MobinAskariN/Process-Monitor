@@ -9,7 +9,6 @@
 @using System.Web
 @using System.Linq
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -114,22 +113,27 @@
     </div>
     <script>
         window.relationships = {};
-
+        window.relationshipVariables = {};
         @foreach (var r in relation)
         {
             <text>
-            if (!window.relationships["Child Node-@r.beginning_process_id"]) window.relationships["Child Node-@r.beginning_process_id"] = [];
-            window.relationships["Child Node-@r.beginning_process_id"].push("Child Node-@r.ending_process_id");
+            if (!window.relationships["child-@r.beginning_process_id"]) window.relationships["child-@r.beginning_process_id"] = [];
+            window.relationships["child-@r.beginning_process_id"].push("child-@r.ending_process_id");
             </text>
         }
         console.log(window.relationships);
 
-        window.childNodeData = {}; // Make it global
+        @*window.relationshipVariables = {};
+        @foreach (var r in relation)
+        {
 
+        }*@
+
+        window.childNodeData = {}; // Make it global
         @for (int i = 0; i < processData.Count; i++)
         {
             var item = processData[i];
-            var nodeKey = "Child Node-" + (processData[i].process_id);
+            var nodeKey = "child-" + (processData[i].process_id);
             <text>
             window.childNodeData["@nodeKey"] = {
                 type1: "@item.description_type1",
@@ -137,7 +141,7 @@
             };
             </text>
         }
-        </script>
+    </script>
 
     <script src="@Url.Content("~/Scripts/script.js")"></script>
 </body>

@@ -24,6 +24,9 @@ namespace process_schematic_4._5.Controllers
             List<Grouping> groupings = _context.getGrouping();
             List<Relations> relations = _context.getRelations();
 
+            foreach (Relations r in relations)
+                r.ExtractParameters();
+
             //Debug.WriteLine(processDatas.First().process_title);
 
 
