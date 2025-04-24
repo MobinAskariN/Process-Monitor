@@ -1,5 +1,6 @@
 // تعریف ارتباطات بین child-nodeها
 const relationships = window.relationships;
+
 //const relationships = {
 //  'Child Node-1': ['Child Node-4', 'Child Node-5'],
 //  'Child Node-3': ['Child Node-2'],
@@ -7,21 +8,21 @@ const relationships = window.relationships;
 //};
 
 // تعریف متغیرهای پیش‌فرض برای هر ارتباط
-//const relationshipVariables = window.relationshipVariables;
-const relationshipVariables = {
-  'Child Node-1-Child Node-5': [
-    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }, { v6: 'vv6' }
-  ],
-  'Child Node-1-Child Node-4': [
-    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }
-  ],
-  'Child Node-4-Child Node-2': [
-    { v1: 'vv1' }, { v2: 'vv2' }
-  ],
-  'Child Node-3-Child Node-2': [
-    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }
-  ]
-};
+const relationshipVariables = window.relationshipVariables;
+//const relationshipVariables = {
+//  'Child Node-1-Child Node-5': [
+//    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }, { v6: 'vv6' }
+//  ],
+//  'Child Node-1-Child Node-4': [
+//    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }
+//  ],
+//  'Child Node-4-Child Node-2': [
+//    { v1: 'vv1' }, { v2: 'vv2' }
+//  ],
+//  'Child Node-3-Child Node-2': [
+//    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }
+//  ]
+//};
 
 // تعریف اطلاعات پیش‌فرض برای child-nodeها
 const childNodeData = window.childNodeData;
