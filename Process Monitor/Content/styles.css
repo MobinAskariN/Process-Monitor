@@ -142,3 +142,17 @@ body {
     .modal-close:hover {
         color: #ff6347; /* قرمز هماهنگ با child */
     }
+
+#save-button {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+#save-button:hover {
+    background-color: #45a049;
+}

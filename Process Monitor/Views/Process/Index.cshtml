@@ -16,7 +16,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Nested Nodes</title>
-    <link rel="stylesheet" href="~/Content/styles.css">
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles.css")?v=@DateTime.Now.Ticks">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="child-area">
@@ -25,23 +26,16 @@
             @{
                 foreach (Process_Monitor.Models.ProcessData p in processData)
                 {
-                    <div class="node child" id="child-@p.process_id" data-parent-id="parent-@p.process_group">@p.process_title</div>
-
+                    string style = "";
+                    string parentClass = "node child";
+                    if (p.x.HasValue && p.y.HasValue && p.x != -1 && p.y != -1)
+                    {
+                        style = "style='position: absolute; left: " + p.x + "px; top: " + p.y + "px;'";
+                        parentClass = "node child in-canvas";
+                    }
+                    <div class="@parentClass" id="child-@p.process_id" data-parent-id="parent-@p.process_group" @style>@p.process_title</div>
                 }
             }
-            @*<div class="node child" data-parent-id="parent-1">Child Node-1</div>
-        <div class="node child" data-parent-id="parent-1">Child Node-2</div>
-        <div class="node child" data-parent-id="parent-2">Child Node-3</div>
-        <div class="node child" data-parent-id="parent-2">Child Node-4</div>
-        <div class="node child" data-parent-id="parent-3">Child Node-5</div>
-        <div class="node child" data-parent-id="parent-3">Child Node-6</div>
-        <div class="node child" data-parent-id="parent-4">Child Node-7</div>
-        <div class="node child" data-parent-id="parent-4">Child Node-8</div>
-        <div class="node child" data-parent-id="parent-4">Child Node-9</div>
-        <div class="node child" data-parent-id="parent-4">Child Node-10</div>
-        <div class="node child" data-parent-id="parent-4">Child Node-11</div>
-        <div class="node child" data-parent-id="parent-5">Child Node-12</div>
-        <div class="node child" data-parent-id="parent-5">Child Node-13</div>*@
         </div>
     </div>
 
@@ -53,12 +47,12 @@
                 </marker>
             </defs>
         </svg>
+        <button id="save-button" onclick="saveNodePositions()">Save</button>
 
 
 
         @helper RenderNodes(List<Process_Monitor.Models.Grouping> items, int? parentId)
         {
-            // Find children before the loop
             List<Process_Monitor.Models.Grouping> children = new List<Process_Monitor.Models.Grouping>();
             foreach (var item in items)
             {
@@ -70,37 +64,21 @@
 
             foreach (var child in children)
             {
-                <div class="node parent" id="parent-@child.group_id">
+                string style = "";
+                if (child.x.HasValue && child.y.HasValue && child.width.HasValue && child.height.HasValue)
+                {
+                    style = "style='position: absolute; left: " + child.x + "px; top: " + child.y + "px; width: " + child.width + "px; height: " + child.height + "px;'";
+                }
+                <div class="node parent" id="parent-@child.group_id" @style>
                     @child.group_title
                     @RenderNodes(items, child.group_id)
                     <div class="resize-handle"></div>
                 </div>
             }
         }
-
+        
         @RenderNodes(grouping, null)
 
-
-        @*<div class="node parent" id="parent-1">
-            Parent Node-1
-            <div class="node parent" id="parent-2">
-                Parent Node-2
-                <div class="node parent" id="parent-3">
-                    Parent Node-3
-                    <div class="resize-handle"></div>
-                </div>
-                <div class="node parent" id="parent-4">
-                    Parent Node-4
-                    <div class="resize-handle"></div>
-                </div>
-                <div class="node parent" id="parent-5">
-                    Parent Node-5
-                    <div class="resize-handle"></div>
-                </div>
-                <div class="resize-handle"></div>
-            </div>
-            <div class="resize-handle"></div>
-        </div>*@
 
         <div class="tooltip" id="tooltip"></div>
         <!-- اضافه کردن modal -->
@@ -112,6 +90,10 @@
         </div>
     </div>
     <script>
+        window.childPositions = {};
+        window.parentDimensions = {};
+
+
         window.relationships = {};
         @foreach (var r in relation)
         {
@@ -164,6 +146,6 @@
         }
     </script>
 
-    <script src="@Url.Content("~/Scripts/script.js")"></script>
+    <script src="@Url.Content("~/Scripts/script.js")?v=@DateTime.Now.Ticks"></script>
 </body>
 </html>

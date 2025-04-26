@@ -1,85 +1,16 @@
+// متغیرها برای ذخیره موقعیت‌ها و اندازه‌ها
+const childPositions = {};
+const parentDimensions = {};
+
+
 // تعریف ارتباطات بین child-nodeها
 const relationships = window.relationships;
 
-//const relationships = {
-//  'Child Node-1': ['Child Node-4', 'Child Node-5'],
-//  'Child Node-3': ['Child Node-2'],
-//  'Child Node-4': ['Child Node-2']
-//};
-
 // تعریف متغیرهای پیش‌فرض برای هر ارتباط
 const relationshipVariables = window.relationshipVariables;
-//const relationshipVariables = {
-//  'Child Node-1-Child Node-5': [
-//    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }, { v6: 'vv6' }
-//  ],
-//  'Child Node-1-Child Node-4': [
-//    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }
-//  ],
-//  'Child Node-4-Child Node-2': [
-//    { v1: 'vv1' }, { v2: 'vv2' }
-//  ],
-//  'Child Node-3-Child Node-2': [
-//    { v1: 'vv1' }, { v2: 'vv2' }, { v3: 'vv3' }, { v4: 'vv4' }, { v5: 'vv5' }
-//  ]
-//};
 
 // تعریف اطلاعات پیش‌فرض برای child-nodeها
 const childNodeData = window.childNodeData;
-//const childNodeData = {
-//  'Child Node-1': {
-//    type1: 'این اطلاعات نوع اول برای Child Node-1 است. مثلاً یه توضیح کوتاه.',
-//    type2: 'این اطلاعات نوع دوم برای Child Node-1 است. جزئیات بیشتر اینجا میاد.'
-//  },
-//  'Child Node-2': {
-//    type1: 'اطلاعات نوع اول Child Node-2: وضعیت فعال.',
-//    type2: 'اطلاعات نوع دوم Child Node-2: تاریخ ایجاد و جزئیات فنی.'
-//  },
-//  'Child Node-3': {
-//    type1: 'Child Node-3 نوع اول: یه متن ساده.',
-//    type2: 'Child Node-3 نوع دوم: اطلاعات پیچیده‌تر.'
-//  },
-//  'Child Node-4': {
-//    type1: 'Child Node-4 نوع اول: توضیح مختصر.',
-//    type2: 'Child Node-4 نوع دوم: داده‌های اضافی.'
-//  },
-//  'Child Node-5': {
-//    type1: 'Child Node-5 نوع اول: وضعیت فعلی.',
-//    type2: 'Child Node-5 نوع دوم: اطلاعات تکمیلی.'
-//  },
-//  'Child Node-6': {
-//    type1: 'Child Node-6 نوع اول: یه چیز کوتاه.',
-//    type2: 'Child Node-6 نوع دوم: توضیحات بیشتر.'
-//  },
-//  'Child Node-7': {
-//    type1: 'Child Node-7 نوع اول: اطلاعات پایه.',
-//    type2: 'Child Node-7 نوع دوم: جزئیات کامل.'
-//  },
-//  'Child Node-8': {
-//    type1: 'Child Node-8 نوع اول: متن اولیه.',
-//    type2: 'Child Node-8 نوع دوم: داده‌های تکمیلی.'
-//  },
-//  'Child Node-9': {
-//    type1: 'Child Node-9 نوع اول: توضیح کوتاه.',
-//    type2: 'Child Node-9 نوع دوم: اطلاعات بیشتر.'
-//  },
-//  'Child Node-10': {
-//    type1: 'Child Node-10 نوع اول: یه متن ساده.',
-//    type2: 'Child Node-10 نوع دوم: جزئیات اضافی.'
-//  },
-//  'Child Node-11': {
-//    type1: 'Child Node-11 نوع اول: وضعیت.',
-//    type2: 'Child Node-11 نوع دوم: توضیحات کامل.'
-//  },
-//  'Child Node-12': {
-//    type1: 'Child Node-12 نوع اول: اطلاعات اولیه.',
-//    type2: 'Child Node-12 نوع دوم: داده‌های بیشتر.'
-//  },
-//  'Child Node-13': {
-//    type1: 'Child Node-13 نوع اول: متن کوتاه.',
-//    type2: 'Child Node-13 نوع دوم: اطلاعات تکمیلی.'
-//  }
-//};
 
 // ذخیره خطوط برای دسترسی مستقیم
 const arrowElements = new Map();
@@ -114,6 +45,19 @@ function setupDrag(node) {
 
             node.style.left = `${newX}px`;
             node.style.top = `${newY}px`;
+
+            // به‌روزرسانی موقعیت‌ها
+            if (node.classList.contains('child')) {
+                childPositions[node.id] = { x_coor: Math.round(newX), y_coor: Math.round(newY) };
+            } else if (node.classList.contains('parent')) {
+                parentDimensions[node.id] = {
+                    x_coor: Math.round(newX),
+                    y_coor: Math.round(newY),
+                    width: node.offsetWidth,
+                    height: node.offsetHeight
+                };
+            }
+
             updateArrows();
         }
     });
@@ -173,6 +117,15 @@ function setupResize(handle) {
 
             parentNode.style.width = `${newWidth}px`;
             parentNode.style.height = `${newHeight}px`;
+
+            // به‌روزرسانی ابعاد parent-node
+            parentDimensions[parentNode.id] = {
+                x_coor: Math.round(parseFloat(parentNode.style.left || '0')),
+                y_coor: Math.round(parseFloat(parentNode.style.top || '0')),
+                width: newWidth,
+                height: newHeight
+            };
+
             updateArrows();
         }
     });
@@ -223,6 +176,14 @@ function adjustParentSize(parentNode) {
     const padding = 10;
     parentNode.style.width = `${maxRight + padding}px`;
     parentNode.style.height = `${maxBottom + padding}px`;
+
+    // به‌روزرسانی ابعاد parent-node
+    parentDimensions[parentNode.id] = {
+        x_coor: Math.round(parseFloat(parentNode.style.left || '0')),
+        y_coor: Math.round(parseFloat(parentNode.style.top || '0')),
+        width: maxRight + padding,
+        height: maxBottom + padding
+    };
 }
 
 // تابع برای تنظیم موقعیت parent-nodeهای فرزند به صورت شبکه‌ای
@@ -240,6 +201,13 @@ function adjustParentPositions(parentNode) {
         child.style.position = 'absolute';
         child.style.left = `${currentLeft}px`;
         child.style.top = `${currentTop}px`;
+        // به‌روزرسانی موقعیت parent-node
+        parentDimensions[child.id] = {
+            x_coor: Math.round(currentLeft),
+            y_coor: Math.round(currentTop),
+            width: child.offsetWidth,
+            height: child.offsetHeight
+        };
 
         const nextTop = currentTop + child.offsetHeight + margin;
         if (nextTop > maxHeight) {
@@ -455,6 +423,10 @@ function moveChildToParent(childNode, parentNode) {
     const { left, top } = getNextPosition(parentNode);
     childNode.style.left = `${left}px`;
     childNode.style.top = `${top}px`;
+
+    // به‌روزرسانی موقعیت child-node
+    childPositions[childNode.id] = { x_coor: Math.round(left), y_coor: Math.round(top) };
+
     updateZIndex(childNode);
     adjustParentSize(parentNode);
     updateArrows();
@@ -467,6 +439,10 @@ function moveChildToArea(childNode) {
     childList.appendChild(childNode);
     childNode.style.position = 'static';
     childNode.style.zIndex = '5';
+
+    // تنظیم موقعیت به -1 برای child-node در child-list
+    childPositions[childNode.id] = { x_coor: -1, y_coor: -1 };
+
     updateArrows();
 }
 
@@ -562,12 +538,111 @@ document.getElementById('modal').addEventListener('click', (e) => {
     }
 });
 
+function initializePositionsAndDimensions() {
+    // تنظیم موقعیت‌های child-nodeها
+    const allChildNodes = document.querySelectorAll('.child');
+    allChildNodes.forEach(child => {
+        const childId = child.id;
+        const left = parseFloat(child.style.left || '0');
+        const top = parseFloat(child.style.top || '0');
+        if (child.closest('.child-list') || isNaN(left) || isNaN(top)) {
+            childPositions[childId] = { x_coor: -1, y_coor: -1 };
+        } else {
+            childPositions[childId] = { x_coor: Math.round(left), y_coor: Math.round(top) };
+        }
+    });
+
+    // تنظیم موقعیت‌ها و اندازه‌های parent-nodeها
+    const allParentNodes = document.querySelectorAll('.parent');
+    allParentNodes.forEach(parent => {
+        const parentId = parent.id;
+        const left = parseFloat(parent.style.left || '0');
+        const top = parseFloat(parent.style.top || '0');
+        const width = parseFloat(parent.style.width || parent.offsetWidth);
+        const height = parseFloat(parent.style.height || parent.offsetHeight);
+        parentDimensions[parentId] = {
+            x_coor: Math.round(left),
+            y_coor: Math.round(top),
+            width: width,
+            height: height
+        };
+    });
+}
+
 // تنظیم اولیه سایز و موقعیت تمام parent-nodeها
 const rootParents = document.querySelectorAll('.canvas > .parent');
 rootParents.forEach(rootParent => {
-    rootParent.style.left = rootParent.id === 'parent-1' ? '200px' : '800px';
-    rootParent.style.top = '150px';
-    adjustParentPositions(rootParent);
-    adjustParentSize(rootParent);
+    const parentId = rootParent.id;
+    const dim = parentDimensions[parentId];
+    if (!dim || isNaN(dim.x_coor) || isNaN(dim.y_coor) || !dim.width || !dim.height) {
+        rootParent.style.left = rootParent.id === 'parent-1' ? '200px' : '800px';
+        rootParent.style.top = '150px';
+        adjustParentPositions(rootParent);
+        adjustParentSize(rootParent);
+    }
 });
+
+function saveNodePositions() {
+    const processUpdates = [];
+    const groupUpdates = [];
+
+    // جمع‌آوری داده‌های child-nodeها
+    for (const [childId, pos] of Object.entries(childPositions)) {
+        const processId = parseInt(childId.replace('child-', ''));
+        processUpdates.push({
+            process_id: processId,
+            x: pos.x_coor,
+            y: pos.y_coor
+        });
+    }
+
+    // جمع‌آوری داده‌های parent-nodeها
+    for (const [parentId, dim] of Object.entries(parentDimensions)) {
+        const groupId = parseInt(parentId.replace('parent-', ''));
+        groupUpdates.push({
+            group_id: groupId,
+            x: dim.x_coor,
+            y: dim.y_coor,
+            width: dim.width,
+            height: dim.height
+        });
+    }
+
+    // ارسال داده‌ها به سرور با AJAX
+    $.ajax({
+        url: '/Process/UpdateCoordinates', // مسیر متد کنترلر
+        type: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({
+            processData: processUpdates,
+            groupData: groupUpdates
+        }),
+        success: function (response) {
+            if (response.success) {
+                alert('Coordinates updated successfully!');
+            } else {
+                alert('Error updating coordinates.');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX error:', status, error);
+            alert('An error occurred while updating coordinates.');
+        }
+    });
+}
+initializePositionsAndDimensions();
+updateArrows();
+
+// انتقال child-nodeهای داخل بوم به parent-node مربوطه
+const childNodesInCanvas = document.querySelectorAll('.child.in-canvas');
+childNodesInCanvas.forEach(childNode => {
+    const parentId = childNode.getAttribute('data-parent-id');
+    const targetParent = document.getElementById(parentId);
+    if (targetParent) {
+        childNode.remove();
+        targetParent.appendChild(childNode);
+        childNode.classList.remove('in-canvas'); // حذف کلاس موقت
+    }
+});
+
 updateArrows();
