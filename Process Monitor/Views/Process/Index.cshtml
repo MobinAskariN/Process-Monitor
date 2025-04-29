@@ -4,10 +4,8 @@
     var grouping = ViewBag.grouping as List<Process_Monitor.Models.Grouping>;
     var relation = ViewBag.relation as List<Process_Monitor.Models.Relations>;
     Layout = null;
-
 }
 @using System.Web
-@using System.Linq
 
 <!DOCTYPE html>
 <html lang="en">
@@ -16,24 +14,37 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Nested Nodes</title>
-    <link rel="stylesheet" href="@Url.Content("~/Content/styles.css")?v=@DateTime.Now.Ticks">
+    <link rel="stylesheet" href="@Url.Content("~/Content/styles.css")?v=@DateTime.Now.Ticks.ToString()">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+
     <div class="child-area">
         <h3>Child Nodes</h3>
         <div class="child-list">
             @{
-                foreach (Process_Monitor.Models.ProcessData p in processData)
+                if (processData == null || processData.Count == 0)
                 {
-                    string style = "";
-                    string parentClass = "node child";
-                    if (p.x.HasValue && p.y.HasValue && p.x != -1 && p.y != -1)
+                    <p>خطا: هیچ داده فرآیندی لود نشده است.</p>
+                }
+                else
+                {
+                    foreach (Process_Monitor.Models.ProcessData p in processData)
                     {
-                        style = "style='position: absolute; left: " + p.x + "px; top: " + p.y + "px;'";
-                        parentClass = "node child in-canvas";
+                        string style = "";
+                        string parentClass = "node child";
+                        if (p.x != null && p.y != null && p.x != -1 && p.y != -1)
+                        {
+                            style = "position: absolute; left: " + p.x.ToString() + "px; top: " + p.y.ToString() + "px;";
+                            parentClass = "node child in-canvas";
+                        }
+                        else
+                        {
+                            style = "";
+                            parentClass = "node child";
+                        }
+                        <div class="@parentClass" id="child-@p.process_id.ToString()" data-parent-id="parent-@p.process_group.ToString()" style="@style">@p.process_title</div>
                     }
-                    <div class="@parentClass" id="child-@p.process_id" data-parent-id="parent-@p.process_group" @style>@p.process_title</div>
                 }
             }
         </div>
@@ -49,8 +60,6 @@
         </svg>
         <button id="save-button" onclick="saveNodePositions()">Save</button>
 
-
-
         @helper RenderNodes(List<Process_Monitor.Models.Grouping> items, int? parentId)
         {
             List<Process_Monitor.Models.Grouping> children = new List<Process_Monitor.Models.Grouping>();
@@ -62,52 +71,63 @@
                 }
             }
 
+            if (children.Count == 0)
+            {
+                if (parentId == null)
+                {
+                    <p>خطا: هیچ گروه‌بندی ریشه‌ای لود نشده است.</p>
+                }
+                return;
+            }
+
             foreach (var child in children)
             {
                 string style = "";
-                if (child.x.HasValue && child.y.HasValue && child.width.HasValue && child.height.HasValue)
+                if (child.x != null && child.y != null && child.width != null && child.height != null)
                 {
-                    style = "style='position: absolute; left: " + child.x + "px; top: " + child.y + "px; width: " + child.width + "px; height: " + child.height + "px;'";
+                    style = "position: absolute; left: " + child.x.ToString() + "px; top: " + child.y.ToString() + "px; width: " + child.width.ToString() + "px; height: " + child.height.ToString() + "px;";
                 }
-                <div class="node parent" id="parent-@child.group_id" @style>
+                <div class="node parent" id="parent-@child.group_id.ToString()" style="@style">
                     @child.group_title
                     @RenderNodes(items, child.group_id)
                     <div class="resize-handle"></div>
                 </div>
             }
         }
-        
-        @RenderNodes(grouping, null)
 
+        @if (grouping == null || grouping.Count == 0)
+        {
+            <p>خطا: هیچ گروه‌بندی لود نشده است.</p>
+        }
+        else
+        {
+            @RenderNodes(grouping, null)
+        }
 
         <div class="tooltip" id="tooltip"></div>
-        <!-- اضافه کردن modal -->
         <div class="modal" id="modal">
             <div class="modal-content">
-                <span class="modal-close">&times;</span>
+                <span class="modal-close">×</span>
                 <div id="modal-body"></div>
             </div>
         </div>
     </div>
-    <script>
-        window.childPositions = {};
-        window.parentDimensions = {};
 
+    <script>
 
         window.relationships = {};
         @foreach (var r in relation)
         {
             <text>
-            if (!window.relationships["child-@r.beginning_process_id"]) window.relationships["child-@r.beginning_process_id"] = [];
-            window.relationships["child-@r.beginning_process_id"].push("child-@r.ending_process_id");
+            if (!window.relationships["child-@r.beginning_process_id.ToString()"]) window.relationships["child-@r.beginning_process_id.ToString()"] = [];
+            window.relationships["child-@r.beginning_process_id.ToString()"].push("child-@r.ending_process_id.ToString()");
             </text>
         }
 
         window.relationshipVariables = {
             @foreach (var r in relation)
             {
-                r.ExtractParameters();
-                var key = "child-" + r.beginning_process_id + "-child-" + r.ending_process_id;
+                var key = "child-" + r.beginning_process_id.ToString() + "-child-" + r.ending_process_id.ToString();
                 <text>"@key": [</text>
 
                 var paramList = new List<KeyValuePair<string, string>>();
@@ -131,12 +151,11 @@
             }
         };
 
-
-        window.childNodeData = {}; // Make it global
-        @for (int i = 0; i < processData.Count; i++)
+        window.childNodeData = {};
+        @for (int i = 0; i < (processData != null ? processData.Count : 0); i++)
         {
             var item = processData[i];
-            var nodeKey = "child-" + (processData[i].process_id);
+            var nodeKey = "child-" + processData[i].process_id.ToString();
             <text>
             window.childNodeData["@nodeKey"] = {
                 type1: "@item.description_type1",
@@ -146,6 +165,6 @@
         }
     </script>
 
-    <script src="@Url.Content("~/Scripts/script.js")?v=@DateTime.Now.Ticks"></script>
+    <script src="@Url.Content("~/Scripts/script.js")?v=@DateTime.Now.Ticks.ToString()"></script>
 </body>
 </html>

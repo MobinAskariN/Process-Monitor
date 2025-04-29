@@ -10,6 +10,7 @@ namespace Process_Monitor.Models
         public int process_id { get; set; }
         public int? x { get; set; }
         public int? y { get; set; }
+
     }
 
     public class GroupUpdates
