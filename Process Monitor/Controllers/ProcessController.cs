@@ -48,6 +48,7 @@ namespace process_schematic_4._5.Controllers
                     var process = db.ProcessData.Find(data.process_id);
                     if (process != null)
                     {
+                        process.previous_process_group = data.process_group;
                         process.x = data.x;
                         process.y = data.y;
                     }

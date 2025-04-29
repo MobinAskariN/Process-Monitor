@@ -584,13 +584,16 @@ function layoutRootParents() {
 function saveNodePositions() {
     const processUpdates = [];
     for (const id in childPositions) {
+        const childNode = document.getElementById(id);
+        const parentId = childNode.getAttribute("data-parent-id");
+        const processGroup = parentId ? parseInt(parentId.replace("parent-", "")) : null;
         processUpdates.push({
             process_id: parseInt(id.replace("child-", "")),
+            process_group: processGroup, // اضافه کردن process_group
             x: childPositions[id].x_coor,
             y: childPositions[id].y_coor
         });
     }
-
     const groupUpdates = [];
     for (const id in parentDimensions) {
         groupUpdates.push({

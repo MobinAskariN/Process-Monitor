@@ -31,6 +31,12 @@
                 {
                     foreach (Process_Monitor.Models.ProcessData p in processData)
                     {
+                        if(p.previous_process_group != p.process_group)
+                        {
+                            p.x = -1;
+                            p.y = -1;
+                        }
+
                         string style = "";
                         string parentClass = "node child";
                         if (p.x != null && p.y != null && p.x != -1 && p.y != -1)

@@ -47,6 +47,9 @@ namespace Process_Monitor.Models
         [Column("Y_Coor")]
         public int? y { get; set; }
 
+        [Column("Previous_Parent")]
+        public int? previous_process_group { get; set; }
+
 
     }
 
