@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nested Nodes</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="child-area">
+    <h3>Child Nodes</h3>
+    <div class="child-list">
+      <div class="node child" data-parent-id="parent-1">Child Node-1</div>
+      <div class="node child" data-parent-id="parent-1">Child Node-2</div>
+      <div class="node child" data-parent-id="parent-2">Child Node-3</div>
+      <div class="node child" data-parent-id="parent-2">Child Node-4</div>
+      <div class="node child" data-parent-id="parent-3">Child Node-5</div>
+      <div class="node child" data-parent-id="parent-3">Child Node-6</div>
+      <div class="node child" data-parent-id="parent-4">Child Node-7</div>
+      <div class="node child" data-parent-id="parent-4">Child Node-8</div>
+      <div class="node child" data-parent-id="parent-4">Child Node-9</div>
+      <div class="node child" data-parent-id="parent-4">Child Node-10</div>
+      <div class="node child" data-parent-id="parent-4">Child Node-11</div>
+      <div class="node child" data-parent-id="parent-5">Child Node-12</div>
+      <div class="node child" data-parent-id="parent-5">Child Node-13</div>
+    </div>
+  </div>
+
+  <div class="canvas">
+    <svg class="arrows" width="100%" height="100%"><defs>
+  <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+    <polygon points="0 0, 6 2, 0 4" fill="black"></polygon>
+  </marker>
+</defs></svg>
+
+
+
+
+                    <div class="node parent" id="parent-1" style="left: 200px; top: 150px; width: 550px; height: 640px;">
+                مدیریتی و پشتیبان
+                                <div class="node parent" id="parent-2" style="position: absolute; left: 15px; top: 50px;">
+                زیرساخت
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-3" style="position: absolute; left: 15px; top: 170px; width: 525px; height: 400px;">
+                منابع انسانی
+                                <div class="node parent" id="parent-7" style="position: absolute; left: 15px; top: 50px;">
+                آمار و کارکرد
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-8" style="position: absolute; left: 15px; top: 170px;">
+                جذب و استخدام
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-9" style="position: absolute; left: 15px; top: 290px;">
+                انتقال و تسویه
+                
+                <div class="resize-handle"></div>
+            </div>
+
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-4" style="position: absolute; left: 15px; top: 290px;">
+                تامین
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-5" style="position: absolute; left: 15px; top: 410px;">
+                توسعه سیستم
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-6" style="position: absolute; left: 15px; top: 530px;">
+                توسعه فناوری
+                
+                <div class="resize-handle"></div>
+            </div>
+
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-10">
+                اصلی
+                                <div class="node parent" id="parent-11">
+                لجستیک درونی
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-12">
+                عملیات
+                                <div class="node parent" id="parent-16">
+                تحقق محصول
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-17">
+                مهندسی ساخت
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-18">
+                تولید
+                
+                <div class="resize-handle"></div>
+            </div>
+
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-13">
+                لجستیک بیرونی
+                
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-14">
+                فروش 
+                                <div class="node parent" id="parent-20">
+                صدور فاکتور
+                
+                <div class="resize-handle"></div>
+            </div>
+
+                <div class="resize-handle"></div>
+            </div>
+            <div class="node parent" id="parent-15">
+                خدمات پس از فروش
+                                <div class="node parent" id="parent-19">
+                اورهال
+                
+                <div class="resize-handle"></div>
+            </div>
+
+                <div class="resize-handle"></div>
+            </div>
+
+                <div class="resize-handle"></div>
+            </div>
+
+
+
+    
+
+    <div class="tooltip" id="tooltip"></div>
+    <!-- اضافه کردن modal -->
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="modal-close">×</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+</div>  <script src="script.js"></script>
+</body>
+</html>
