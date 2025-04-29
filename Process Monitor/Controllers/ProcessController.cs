@@ -6,7 +6,7 @@ using Process_Monitor.Models;
 using System.Drawing;
 using System.Diagnostics;
 
-namespace process_schematic_4._5.Controllers
+namespace Process_Monitor.Controllers
 {
     public class ProcessController : Controller
     {
