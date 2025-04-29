@@ -9,8 +9,6 @@ namespace Process_Monitor.Models
             this.Configuration.LazyLoadingEnabled = false;
         }
 
-        // If you need to use a custom configuration, use the OnModelCreating method
-        // to configure entity mappings.
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);

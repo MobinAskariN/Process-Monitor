@@ -38,6 +38,7 @@ namespace process_schematic_4._5.Controllers
             return View();
         }
 
+        // update infos recieved by Ajax
         [HttpPost]
         public ActionResult UpdateCoordinates(List<ProcessUpdates> processData, List<GroupUpdates> groupData)
         {

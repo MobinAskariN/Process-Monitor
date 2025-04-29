@@ -7,6 +7,8 @@ namespace Process_Monitor.Models
 {
     public class DatabaseMethods
     {
+        // methods for reading from database
+
         private readonly ApplicationDbContext _context;
 
         public DatabaseMethods(ApplicationDbContext context)

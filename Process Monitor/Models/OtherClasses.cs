@@ -5,6 +5,7 @@ using System.Web;
 
 namespace Process_Monitor.Models
 {
+    // these classes contain required informations for saving last status of process data
     public class ProcessUpdates
     {
         public int process_id { get; set; }
