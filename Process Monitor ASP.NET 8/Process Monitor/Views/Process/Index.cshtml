@@ -1,0 +1,180 @@
+﻿@{
+    ViewData["Title"] = "Process Monitor";
+    List<ProcessData> processData = ViewBag.processData;
+    List<Grouping> grouping = ViewBag.grouping;
+    List<Relations> relation = ViewBag.relation;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Nested Nodes</title>
+    <link rel="stylesheet" asp-href-include="~/css/styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" />
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+<body>
+    <button id="save-button" onclick="saveNodePositions()">Save</button>
+
+    <div class="child-area">
+        <h3>Child Nodes</h3>
+        <div class="child-list">
+            @if (processData == null || processData.Count == 0)
+            {
+                <p>خطا: هیچ داده فرآیندی لود نشده است.</p>
+            }
+            else
+            {
+                foreach (var p in processData)
+                {
+                    if (p.previous_process_group != p.process_group)
+                    {
+                        p.x = -1;
+                        p.y = -1;
+                    }
+
+                    string style = "";
+                    string parentClass = "node child";
+                    if (p.x != null && p.y != null && p.x != -1 && p.y != -1)
+                    {
+                        style = $"position: absolute; left: {p.x}px; top: {p.y}px;";
+                        parentClass = "node child in-canvas";
+                    }
+
+                    string iconClass = p.start_method switch
+                    {
+                        "subprocess" => "fas fa-cogs",
+                        "user" => "fas fa-user",
+                        "periodic" => "fas fa-clock",
+                        _ => "fas fa-circle"
+                    };
+
+                    <div class="@parentClass" id="child-@p.process_id" data-parent-id="parent-@p.process_group" style="@style">
+                        <i class="@iconClass"></i> @p.process_title
+                    </div>
+                }
+            }
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <button class="toolbar-btn" id="zoom-in"><i class="fas fa-search-plus"></i></button>
+        <button class="toolbar-btn" id="zoom-out"><i class="fas fa-search-minus"></i></button>
+    </div>
+
+    <div class="canvas-container">
+        <div class="canvas" id="canvas">
+            <svg class="arrows" width="100%" height="100%">
+                <defs>
+                    <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
+                        <polygon points="0 0, 6 2, 0 4" fill="black" />
+                    </marker>
+                </defs>
+            </svg>
+            <button id="save-button" onclick="saveNodePositions()">Save</button>
+
+            @{
+                RenderNodes(grouping, null);
+            }
+
+            <div class="tooltip" id="tooltip"></div>
+        </div>
+    </div>
+
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="modal-close">×</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script>
+        window.relationships = {};
+        @foreach (var r in relation)
+        {
+            var from = $"child-{r.beginning_process_id}";
+            var to = $"child-{r.ending_process_id}";
+            <text>
+                            if (!window.relationships[@Json.Serialize(from)]) window.relationships[@Json.Serialize(from)] = [];
+            window.relationships[@Json.Serialize(from)].push(@Json.Serialize(to));
+            </text>
+        }
+
+            window.relationshipVariables = {
+        @for (int idx = 0; idx < relation.Count; idx++)
+        {
+            var r = relation[idx];
+            var key = $"child-{r.beginning_process_id}-child-{r.ending_process_id}";
+            var paramList = r.parameters?.ToList() ?? new();
+            <text>@Json.Serialize(key): [</text>
+
+            for (int i = 0; i < paramList.Count; i++)
+            {
+                var k = paramList[i].Key;
+                var v = paramList[i].Value;
+                var isLast = i == paramList.Count - 1;
+                <text>{@Json.Serialize(k): @Json.Serialize(v)} @(isLast ? "" : ", ")</text>
+            }
+
+            var isLastRel = idx == relation.Count - 1;
+            <text>]@(isLastRel ? "" : ", ")</text>
+        }
+                };
+
+        window.childNodeData = {};
+        @for (int i = 0; i < (processData?.Count ?? 0); i++)
+        {
+            var item = processData[i];
+            var nodeKey = $"child-{item.process_id}";
+            <text>
+                window.childNodeData[@Json.Serialize(nodeKey)] = {
+                type1: @Json.Serialize(item.description_type1),
+                    type2: @Json.Serialize(item.description_type2),
+                        repeatCount: @Json.Serialize(item.repetition_num),
+                            avgTime: @Json.Serialize(item.average_duration),
+                                processType: @Json.Serialize(item.start_method)
+                            };
+            </text>
+        }
+    </script>
+
+    <script src="~/js/script.js" asp-append-version="true"></script>
+</body>
+</html>
+
+@functions {
+    public void RenderNodes(List<Grouping> items, int? parentId)
+    {
+        var children = items.Where(x => x.parent_id == parentId).ToList();
+
+        if (!children.Any())
+        {
+            if (parentId == null)
+            {
+                @:<p>خطا: هیچ گروه‌بندی ریشه‌ای لود نشده است.</p>
+            }
+            return;
+        }
+
+        foreach (var child in children)
+        {
+            var style = (child.x != null && child.y != null && child.width != null && child.height != null)
+                ? $"position: absolute; left: {child.x}px; top: {child.y}px; width: {child.width}px; height: {child.height}px;"
+                : "";
+
+            <text>
+                <div class="node parent" id="parent-@child.group_id" style="@style">
+                    @child.group_title
+                    @{
+                        RenderNodes(items, child.group_id);
+                    }
+                    <div class="resize-handle"></div>
+                </div>
+            </text>
+        }
+    }
+}

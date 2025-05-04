@@ -29,10 +29,6 @@ namespace Process_Monitor.Controllers
             foreach (ProcessData p in processDatas)
                 p.Edit_start_method();
 
-            //Debug.WriteLine(processDatas.First().process_title);
-
-
-
             // setting all things we need in our page
             ViewBag.processData = processDatas;
             ViewBag.grouping = groupings;
