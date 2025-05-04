@@ -26,6 +26,8 @@ namespace Process_Monitor.Controllers
 
             foreach (Relations r in relations)
                 r.ExtractParameters();
+            foreach (ProcessData p in processDatas)
+                p.Edit_start_method();
 
             //Debug.WriteLine(processDatas.First().process_title);
 

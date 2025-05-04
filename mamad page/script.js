@@ -29,60 +29,103 @@ const relationshipVariables = {
 const childNodeData = {
   'Child Node-1': {
     type1: 'این اطلاعات نوع اول برای Child Node-1 است. مثلاً یه توضیح کوتاه.',
-    type2: 'این اطلاعات نوع دوم برای Child Node-1 است. جزئیات بیشتر اینجا میاد.'
+    type2: 'این اطلاعات نوع دوم برای Child Node-1 است. جزئیات بیشتر اینجا میاد.',
+    repeatCount: 10,
+    avgTime: '5 دقیقه',
+    processType: 'subprocess'
   },
   'Child Node-2': {
     type1: 'اطلاعات نوع اول Child Node-2: وضعیت فعال.',
-    type2: 'اطلاعات نوع دوم Child Node-2: تاریخ ایجاد و جزئیات فنی.'
+    type2: 'اطلاعات نوع دوم Child Node-2: تاریخ ایجاد و جزئیات فنی.',
+    repeatCount: 15,
+    avgTime: '3 دقیقه',
+    processType: 'user'
   },
   'Child Node-3': {
     type1: 'Child Node-3 نوع اول: یه متن ساده.',
-    type2: 'Child Node-3 نوع دوم: اطلاعات پیچیده‌تر.'
+    type2: 'Child Node-3 نوع دوم: اطلاعات پیچیده‌تر.',
+    repeatCount: 8,
+    avgTime: '7 دقیقه',
+    processType: 'periodic'
   },
   'Child Node-4': {
     type1: 'Child Node-4 نوع اول: توضیح مختصر.',
-    type2: 'Child Node-4 نوع دوم: داده‌های اضافی.'
+    type2: 'Child Node-4 نوع دوم: داده‌های اضافی.',
+    repeatCount: 20,
+    avgTime: '2 دقیقه',
+    processType: 'subprocess'
   },
   'Child Node-5': {
     type1: 'Child Node-5 نوع اول: وضعیت فعلی.',
-    type2: 'Child Node-5 نوع دوم: اطلاعات تکمیلی.'
+    type2: 'Child Node-5 نوع دوم: اطلاعات تکمیلی.',
+    repeatCount: 12,
+    avgTime: '4 دقیقه',
+    processType: 'user'
   },
   'Child Node-6': {
     type1: 'Child Node-6 نوع اول: یه چیز کوتاه.',
-    type2: 'Child Node-6 نوع دوم: توضیحات بیشتر.'
+    type2: 'Child Node-6 نوع دوم: توضیحات بیشتر.',
+    repeatCount: 5,
+    avgTime: '10 دقیقه',
+    processType: 'periodic'
   },
   'Child Node-7': {
     type1: 'Child Node-7 نوع اول: اطلاعات پایه.',
-    type2: 'Child Node-7 نوع دوم: جزئیات کامل.'
+    type2: 'Child Node-7 نوع دوم: جزئیات کامل.',
+    repeatCount: 18,
+    avgTime: '6 دقیقه',
+    processType: 'subprocess'
   },
   'Child Node-8': {
     type1: 'Child Node-8 نوع اول: متن اولیه.',
-    type2: 'Child Node-8 نوع دوم: داده‌های تکمیلی.'
+    type2: 'Child Node-8 نوع دوم: داده‌های تکمیلی.',
+    repeatCount: 7,
+    avgTime: '8 دقیقه',
+    processType: 'user'
   },
   'Child Node-9': {
     type1: 'Child Node-9 نوع اول: توضیح کوتاه.',
-    type2: 'Child Node-9 نوع دوم: اطلاعات بیشتر.'
+    type2: 'Child Node-9 نوع دوم: اطلاعات بیشتر.',
+    repeatCount: 9,
+    avgTime: '5 دقیقه',
+    processType: 'periodic'
   },
   'Child Node-10': {
     type1: 'Child Node-10 نوع اول: یه متن ساده.',
-    type2: 'Child Node-10 نوع دوم: جزئیات اضافی.'
+    type2: 'Child Node-10 نوع دوم: جزئیات اضافی.',
+    repeatCount: 14,
+    avgTime: '3 دقیقه',
+    processType: 'subprocess'
   },
   'Child Node-11': {
     type1: 'Child Node-11 نوع اول: وضعیت.',
-    type2: 'Child Node-11 نوع دوم: توضیحات کامل.'
+    type2: 'Child Node-11 نوع دوم: توضیحات کامل.',
+    repeatCount: 11,
+    avgTime: '4 دقیقه',
+    processType: 'user'
   },
   'Child Node-12': {
     type1: 'Child Node-12 نوع اول: اطلاعات اولیه.',
-    type2: 'Child Node-12 نوع دوم: داده‌های بیشتر.'
+    type2: 'Child Node-12 نوع دوم: داده‌های بیشتر.',
+    repeatCount: 16,
+    avgTime: '2 دقیقه',
+    processType: 'periodic'
   },
   'Child Node-13': {
     type1: 'Child Node-13 نوع اول: متن کوتاه.',
-    type2: 'Child Node-13 نوع دوم: اطلاعات تکمیلی.'
+    type2: 'Child Node-13 نوع دوم: اطلاعات تکمیلی.',
+    repeatCount: 13,
+    avgTime: '6 دقیقه',
+    processType: 'subprocess'
   }
 };
 
 // ذخیره خطوط برای دسترسی مستقیم
 const arrowElements = new Map();
+let zoomLevel = 1;
+const minZoom = 0.05;
+const maxZoom = 3;
+const zoomStep = 0.1;
 
 // تابع برای جابجایی گره‌ها
 function setupDrag(node) {
@@ -93,24 +136,43 @@ function setupDrag(node) {
     e.stopPropagation();
     isDragging = true;
     const rect = node.getBoundingClientRect();
-    offsetX = e.clientX - rect.left;
-    offsetY = e.clientY - rect.top;
+    offsetX = (e.clientX - rect.left) / zoomLevel;
+    offsetY = (e.clientY - rect.top) / zoomLevel;
     node.style.zIndex = 1000;
   });
 
   document.addEventListener('mousemove', (e) => {
     if (isDragging) {
-      const parentNode = node.parentElement;
+      const parentNode = node.parentElement.closest('.parent') || document.querySelector('.canvas');
       const parentRect = parentNode.getBoundingClientRect();
       const nodeRect = node.getBoundingClientRect();
+      const canvas = document.querySelector('.canvas');
 
-      let newX = e.clientX - offsetX - parentRect.left;
-      let newY = e.clientY - offsetY - parentRect.top;
+      let newX = (e.clientX - offsetX * zoomLevel - parentRect.left) / zoomLevel;
+      let newY = (e.clientY - offsetY * zoomLevel - parentRect.top) / zoomLevel;
 
-      if (newX < 0) newX = 0;
-      if (newY < 0) newY = 0;
-      if (newX + nodeRect.width > parentRect.width) newX = parentRect.width - nodeRect.width;
-      if (newY + nodeRect.height > parentRect.height) newY = parentRect.height - nodeRect.height;
+      // محدود کردن جابجایی به ابعاد parent والد یا canvas
+      if (parentNode.classList.contains('canvas')) {
+        // برای parentهای سطح بالا، محدودیت به کل canvas
+        if (newX < 0) newX = 0;
+        if (newY < 0) newY = 0;
+        if (newX + nodeRect.width / zoomLevel > canvas.offsetWidth) {
+          newX = canvas.offsetWidth - nodeRect.width / zoomLevel;
+        }
+        if (newY + nodeRect.height / zoomLevel > canvas.offsetHeight) {
+          newY = canvas.offsetHeight - nodeRect.height / zoomLevel;
+        }
+      } else {
+        // برای parentهای فرزند، محدودیت به parent والد
+        if (newX < 0) newX = 0;
+        if (newY < 0) newY = 0;
+        if (newX + nodeRect.width / zoomLevel > parentRect.width / zoomLevel) {
+          newX = parentRect.width / zoomLevel - nodeRect.width / zoomLevel;
+        }
+        if (newY + nodeRect.height / zoomLevel > parentRect.height / zoomLevel) {
+          newY = parentRect.height / zoomLevel - nodeRect.height / zoomLevel;
+        }
+      }
 
       node.style.left = `${newX}px`;
       node.style.top = `${newY}px`;
@@ -139,27 +201,27 @@ function setupResize(handle) {
     const parentRect = parentNode.getBoundingClientRect();
     startX = e.clientX;
     startY = e.clientY;
-    startWidth = parentRect.width;
-    startHeight = parentRect.height;
+    startWidth = parentRect.width / zoomLevel;
+    startHeight = parentRect.height / zoomLevel;
     parentNode.style.zIndex = 1000;
   });
 
   document.addEventListener('mousemove', (e) => {
     if (isResizing) {
       const parentNode = handle.parentElement;
-      const parentParentNode = parentNode.parentElement;
+      const parentParentNode = parentNode.parentElement.closest('.parent') || document.querySelector('.canvas');
       const parentParentRect = parentParentNode.getBoundingClientRect();
 
-      let newWidth = startWidth + (e.clientX - startX);
-      let newHeight = startHeight + (e.clientY - startY);
+      let newWidth = startWidth + (e.clientX - startX) / zoomLevel;
+      let newHeight = startHeight + (e.clientY - startY) / zoomLevel;
 
       const childNodes = Array.from(parentNode.children).filter(child => !child.classList.contains('resize-handle'));
       let minWidth = 0, minHeight = 0;
 
       childNodes.forEach(child => {
         const childRect = child.getBoundingClientRect();
-        const childRight = childRect.right - parentNode.getBoundingClientRect().left;
-        const childBottom = childRect.bottom - parentNode.getBoundingClientRect().top;
+        const childRight = (childRect.right - parentNode.getBoundingClientRect().left) / zoomLevel;
+        const childBottom = (childRect.bottom - parentNode.getBoundingClientRect().top) / zoomLevel;
 
         if (childRight > minWidth) minWidth = childRight;
         if (childBottom > minHeight) minHeight = childBottom;
@@ -168,8 +230,12 @@ function setupResize(handle) {
       if (newWidth < minWidth) newWidth = minWidth;
       if (newHeight < minHeight) newHeight = minHeight;
 
-      if (newWidth > parentParentRect.width - parentNode.offsetLeft) newWidth = parentParentRect.width - parentNode.offsetLeft;
-      if (newHeight > parentParentRect.height - parentNode.offsetTop) newHeight = parentParentRect.height - parentNode.offsetTop;
+      if (newWidth > parentParentRect.width / zoomLevel - parentNode.offsetLeft / zoomLevel) {
+        newWidth = parentParentRect.width / zoomLevel - parentNode.offsetLeft / zoomLevel;
+      }
+      if (newHeight > parentParentRect.height / zoomLevel - parentNode.offsetTop / zoomLevel) {
+        newHeight = parentParentRect.height / zoomLevel - parentNode.offsetTop / zoomLevel;
+      }
 
       parentNode.style.width = `${newWidth}px`;
       parentNode.style.height = `${newHeight}px`;
@@ -187,7 +253,7 @@ function setupResize(handle) {
   });
 }
 
-// تابع جدید برای مدیریت z-index
+// تابع برای مدیریت z-index
 function updateZIndex(node) {
   const parentNode = node.closest('.parent');
   if (node.classList.contains('child') && parentNode) {
@@ -212,8 +278,8 @@ function adjustParentSize(parentNode) {
   let maxRight = 0;
   let maxBottom = 0;
   children.forEach(child => {
-    const left = parseInt(child.style.left || '0', 10);
-    const top = parseInt(child.style.top || '0', 10);
+    const left = parseFloat(child.style.left || '0');
+    const top = parseFloat(child.style.top || '0');
     const right = left + child.offsetWidth;
     const bottom = top + child.offsetHeight;
     if (right > maxRight) maxRight = right;
@@ -221,8 +287,8 @@ function adjustParentSize(parentNode) {
   });
 
   const padding = 10;
-  parentNode.style.width = `${maxRight + padding}px`;
-  parentNode.style.height = `${maxBottom + padding}px`;
+  parentNode.style.width = `${Math.max(maxRight + padding, 500)}px`;
+  parentNode.style.height = `${Math.max(maxBottom + padding, 100)}px`;
 }
 
 // تابع برای تنظیم موقعیت parent-nodeهای فرزند به صورت شبکه‌ای
@@ -231,7 +297,7 @@ function adjustParentPositions(parentNode) {
   if (childParents.length === 0) return;
 
   const margin = 20;
-  const maxHeight = 650;
+  const maxHeight = 19500;
   let currentTop = 50;
   let currentLeft = 15;
   const columnWidth = 520;
@@ -271,24 +337,24 @@ function getNextPosition(parentNode) {
   return { left, top };
 }
 
-// تابع برای پیدا کردن نزدیک‌ترین ضلع‌ها و رسم خط شکسته بدون مورب
+// تابع برای پیدا کردن نزدیک‌ترین ضلع‌ها و رسم خط شکسته
 function drawArrow(fromNode, toNode) {
   const fromRect = fromNode.getBoundingClientRect();
   const toRect = toNode.getBoundingClientRect();
   const canvasRect = document.querySelector('.canvas').getBoundingClientRect();
 
   const fromPoints = {
-    top: { x: fromRect.left - canvasRect.left + fromRect.width / 2, y: fromRect.top - canvasRect.top },
-    bottom: { x: fromRect.left - canvasRect.left + fromRect.width / 2, y: fromRect.bottom - canvasRect.top },
-    left: { x: fromRect.left - canvasRect.left, y: fromRect.top - canvasRect.top + fromRect.height / 2 },
-    right: { x: fromRect.right - canvasRect.left, y: fromRect.top - canvasRect.top + fromRect.height / 2 }
+    top: { x: (fromRect.left - canvasRect.left + fromRect.width / 2) / zoomLevel, y: (fromRect.top - canvasRect.top) / zoomLevel },
+    bottom: { x: (fromRect.left - canvasRect.left + fromRect.width / 2) / zoomLevel, y: (fromRect.bottom - canvasRect.top) / zoomLevel },
+    left: { x: (fromRect.left - canvasRect.left) / zoomLevel, y: (fromRect.top - canvasRect.top + fromRect.height / 2) / zoomLevel },
+    right: { x: (fromRect.right - canvasRect.left) / zoomLevel, y: (fromRect.top - canvasRect.top + fromRect.height / 2) / zoomLevel }
   };
 
   const toPoints = {
-    top: { x: toRect.left - canvasRect.left + toRect.width / 2, y: toRect.top - canvasRect.top },
-    bottom: { x: toRect.left - canvasRect.left + toRect.width / 2, y: toRect.bottom - canvasRect.top },
-    left: { x: toRect.left - canvasRect.left, y: toRect.top - canvasRect.top + toRect.height / 2 },
-    right: { x: toRect.right - canvasRect.left, y: toRect.top - canvasRect.top + toRect.height / 2 }
+    top: { x: (toRect.left - canvasRect.left + toRect.width / 2) / zoomLevel, y: (toRect.top - canvasRect.top) / zoomLevel },
+    bottom: { x: (toRect.left - canvasRect.left + toRect.width / 2) / zoomLevel, y: (toRect.bottom - canvasRect.top) / zoomLevel },
+    left: { x: (toRect.left - canvasRect.left) / zoomLevel, y: (toRect.top - canvasRect.top + toRect.height / 2) / zoomLevel },
+    right: { x: (toRect.right - canvasRect.left) / zoomLevel, y: (toRect.top - canvasRect.top + toRect.height / 2) / zoomLevel }
   };
 
   let minDistance = Infinity;
@@ -310,10 +376,10 @@ function drawArrow(fromNode, toNode) {
   const end = toPoints[toSide];
   let path = `M ${start.x},${start.y} `;
 
-  if (fromSide === 'right' || fromSide === 'left') { // شروع افقی
+  if (fromSide === 'right' || fromSide === 'left') {
     const midX = (start.x + end.x) / 2;
     path += `L ${midX},${start.y} L ${midX},${end.y} L ${end.x},${end.y}`;
-  } else { // شروع عمودی
+  } else {
     const midY = (start.y + end.y) / 2;
     path += `L ${start.x},${midY} L ${end.x},${midY} L ${end.x},${end.y}`;
   }
@@ -324,7 +390,7 @@ function drawArrow(fromNode, toNode) {
 // تابع برای به‌روزرسانی فلش‌ها
 function updateArrows() {
   const svg = document.querySelector('.arrows');
-  svg.innerHTML = ''; // پاک کردن SVG
+  svg.innerHTML = '';
 
   const childNodesInCanvas = Array.from(document.querySelectorAll('.canvas .child'));
   const arrowData = [];
@@ -342,49 +408,9 @@ function updateArrows() {
             arrow.variables = relationshipVariables[arrowKey] || [];
             arrowElements.set(arrowKey, arrow);
           } else {
-            const fromRect = fromNode.getBoundingClientRect();
-            const toRect = toNode.getBoundingClientRect();
-            const canvasRect = document.querySelector('.canvas').getBoundingClientRect();
-
-            const fromPoints = {
-              top: { x: fromRect.left - canvasRect.left + fromRect.width / 2, y: fromRect.top - canvasRect.top },
-              bottom: { x: fromRect.left - canvasRect.left + fromRect.width / 2, y: fromRect.bottom - canvasRect.top },
-              left: { x: fromRect.left - canvasRect.left, y: fromRect.top - canvasRect.top + fromRect.height / 2 },
-              right: { x: fromRect.right - canvasRect.left, y: fromRect.top - canvasRect.top + fromRect.height / 2 }
-            };
-
-            const toPoints = {
-              top: { x: toRect.left - canvasRect.left + toRect.width / 2, y: toRect.top - canvasRect.top },
-              bottom: { x: toRect.left - canvasRect.left + toRect.width / 2, y: toRect.bottom - canvasRect.top },
-              left: { x: toRect.left - canvasRect.left, y: toRect.top - canvasRect.top + toRect.height / 2 },
-              right: { x: toRect.right - canvasRect.left, y: toRect.top - canvasRect.top + toRect.height / 2 }
-            };
-
-            let minDistance = Infinity;
-            let fromSide, toSide;
-            for (const fromKey in fromPoints) {
-              for (const toKey in toPoints) {
-                const dx = fromPoints[fromKey].x - toPoints[toKey].x;
-                const dy = fromPoints[fromKey].y - toPoints[toKey].y;
-                const distance = Math.sqrt(dx * dx + dy * dy);
-                if (distance < minDistance) {
-                  minDistance = distance;
-                  fromSide = fromKey;
-                  toSide = toKey;
-                }
-              }
-            }
-
-            const start = fromPoints[fromSide];
-            const end = toPoints[toSide];
-            arrow.path = `M ${start.x},${start.y} `;
-            if (fromSide === 'right' || fromSide === 'left') {
-              const midX = (start.x + end.x) / 2;
-              arrow.path += `L ${midX},${start.y} L ${midX},${end.y} L ${end.x},${end.y}`;
-            } else {
-              const midY = (start.y + end.y) / 2;
-              arrow.path += `L ${start.x},${midY} L ${end.x},${midY} L ${end.x},${end.y}`;
-            }
+            arrow = drawArrow(fromNode, toNode);
+            arrow.variables = relationshipVariables[arrowKey] || [];
+            arrowElements.set(arrowKey, arrow);
           }
           arrowData.push(arrow);
         }
@@ -392,15 +418,16 @@ function updateArrows() {
     }
   });
 
-  if (!svg.querySelector('defs')) {
-    const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
-    defs.innerHTML = `
-      <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
-        <polygon points="0 0, 6 2, 0 4" fill="black" />
-      </marker>
-    `;
-    svg.appendChild(defs);
-  }
+  // تنظیم marker فلش با توجه به زوم
+  const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+  const baseMarkerSize = 6; // اندازه پایه فلش
+  const markerSize = baseMarkerSize * zoomLevel; // مقیاس‌بندی با زوم
+  defs.innerHTML = `
+    <marker id="arrowhead" markerWidth="${markerSize}" markerHeight="${markerSize * 2/3}" refX="${markerSize}" refY="${markerSize * 2/3 / 2}" orient="auto">
+      <polygon points="0 0, ${markerSize} ${markerSize * 2/3 / 2}, 0 ${markerSize * 2/3}" fill="black" />
+    </marker>
+  `;
+  svg.appendChild(defs);
 
   const tooltip = document.getElementById('tooltip');
   arrowData.forEach(arrow => {
@@ -409,11 +436,11 @@ function updateArrows() {
     if (!pathElement) {
       pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
       pathElement.setAttribute('stroke', 'black');
-      pathElement.setAttribute('stroke-width', '2');
       pathElement.setAttribute('fill', 'none');
       pathElement.setAttribute('marker-end', 'url(#arrowhead)');
       arrow.pathElement = pathElement;
     }
+    pathElement.setAttribute('stroke-width', `${2 * zoomLevel}`); // تنظیم ضخامت خط
     pathElement.setAttribute('d', arrow.path);
     svg.appendChild(pathElement);
 
@@ -431,14 +458,38 @@ function updateArrows() {
 
     pathElement.addEventListener('mousemove', (e) => {
       const canvasRect = document.querySelector('.canvas').getBoundingClientRect();
-      tooltip.style.left = `${e.clientX - canvasRect.left + 10}px`;
-      tooltip.style.top = `${e.clientY - canvasRect.top + 10}px`;
+      tooltip.style.left = `${(e.clientX - canvasRect.left) / zoomLevel + 10}px`;
+      tooltip.style.top = `${(e.clientY - canvasRect.top) / zoomLevel + 10}px`;
     });
 
     pathElement.addEventListener('mouseout', () => {
       tooltip.style.display = 'none';
     });
   });
+}
+
+// تابع برای افزودن آیکون به child-nodeها بر اساس نوع فرایند
+function addProcessTypeIcon(childNode) {
+  const nodeText = childNode.textContent.trim();
+  const data = childNodeData[nodeText];
+  if (!data) return;
+
+  let iconClass = '';
+  switch (data.processType) {
+    case 'subprocess':
+      iconClass = 'fas fa-cogs';
+      break;
+    case 'user':
+      iconClass = 'fas fa-user';
+      break;
+    case 'periodic':
+      iconClass = 'fas fa-clock';
+      break;
+    default:
+      return;
+  }
+
+  childNode.innerHTML = `<i class="${iconClass}"></i> ${nodeText}`;
 }
 
 // اعمال توابع به تمام گره‌ها و دسته‌های تغییر اندازه
@@ -450,12 +501,14 @@ resizeHandles.forEach(handle => setupResize(handle));
 
 // تابع برای انتقال child-node به parent-node مربوطه
 function moveChildToParent(childNode, parentNode) {
+  const nodeText = childNode.textContent.trim();
   childNode.remove();
   parentNode.appendChild(childNode);
   childNode.style.position = 'absolute';
   const { left, top } = getNextPosition(parentNode);
   childNode.style.left = `${left}px`;
   childNode.style.top = `${top}px`;
+  addProcessTypeIcon(childNode); // افزودن آیکون پس از انتقال
   updateZIndex(childNode);
   adjustParentSize(parentNode);
   updateArrows();
@@ -464,14 +517,16 @@ function moveChildToParent(childNode, parentNode) {
 // تابع برای انتقال child-node از parent-node به لیست
 function moveChildToArea(childNode) {
   const childList = document.querySelector('.child-list');
+  const nodeText = childNode.textContent.trim();
   childNode.remove();
   childList.appendChild(childNode);
   childNode.style.position = 'static';
   childNode.style.zIndex = '5';
+  addProcessTypeIcon(childNode); // افزودن آیکون پس از انتقال
   updateArrows();
 }
 
-// تابع برای بررسی اینکه آیا child-node به parent-node مربوطه کشیده شده است یا نه
+// تابع برای بررسی اینکه آیا child-node به parent-node مربوطه کشیده شده است یا خیر
 function isCorrectParent(childNode, parentNode) {
   return childNode.getAttribute('data-parent-id') === parentNode.id;
 }
@@ -481,6 +536,32 @@ const childNodes = document.querySelectorAll('.child');
 childNodes.forEach(childNode => {
   let clickTimeout = null;
 
+  // افزودن آیکون به child-nodeها در زمان بارگذاری اولیه
+  addProcessTypeIcon(childNode);
+
+  childNode.addEventListener('mouseover', (e) => {
+    const nodeText = childNode.textContent.trim();
+    const data = childNodeData[nodeText];
+    if (data) {
+      const tooltipText = `تعداد دفعات تکرار: ${data.repeatCount}<br>متوسط زمان‌بری: ${data.avgTime}`;
+      const tooltip = document.getElementById('tooltip');
+      tooltip.innerHTML = tooltipText;
+      tooltip.style.display = 'block';
+    }
+  });
+
+  childNode.addEventListener('mousemove', (e) => {
+    const canvasRect = document.querySelector('.canvas').getBoundingClientRect();
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.left = `${(e.clientX - canvasRect.left) / zoomLevel + 10}px`;
+    tooltip.style.top = `${(e.clientY - canvasRect.top) / zoomLevel + 10}px`;
+  });
+
+  childNode.addEventListener('mouseout', () => {
+    const tooltip = document.getElementById('tooltip');
+    tooltip.style.display = 'none';
+  });
+
   childNode.addEventListener('click', (e) => {
     e.preventDefault();
     clearTimeout(clickTimeout);
@@ -489,10 +570,6 @@ childNodes.forEach(childNode => {
       if (parentNode && isCorrectParent(childNode, parentNode)) {
         const nodeText = childNode.textContent.trim();
         const data = childNodeData[nodeText];
-
-        console.log("Clicked node id:");
-
-
         if (data) {
           showModal(data.type1);
         }
@@ -506,10 +583,6 @@ childNodes.forEach(childNode => {
     if (parentNode && isCorrectParent(childNode, parentNode)) {
       const nodeText = childNode.textContent.trim();
       const data = childNodeData[nodeText];
-
-      console.log("Clicked node id:");
-
-
       if (data) {
         showModal(data.type2);
       }
@@ -547,7 +620,7 @@ childNodes.forEach(childNode => {
   });
 });
 
-// تابع برای نمایش modal (بدون انیمیشن)
+// تابع برای نمایش modal
 function showModal(content) {
   const modal = document.getElementById('modal');
   const modalBody = document.getElementById('modal-body');
@@ -555,7 +628,7 @@ function showModal(content) {
   modal.style.display = 'block';
 }
 
-// تابع برای بستن modal (بدون انیمیشن)
+// تابع برای بستن modal
 function closeModal() {
   const modal = document.getElementById('modal');
   modal.style.display = 'none';
@@ -579,4 +652,61 @@ rootParents.forEach(rootParent => {
   adjustParentPositions(rootParent);
   adjustParentSize(rootParent);
 });
+
+// مدیریت زوم
+const canvas = document.querySelector('.canvas');
+const canvasContainer = document.querySelector('.canvas-container');
+
+function zoomCanvas(delta, mouseX, mouseY) {
+  // مختصات موس نسبت به container
+  const rect = canvasContainer.getBoundingClientRect();
+  const offsetX = mouseX - rect.left;
+  const offsetY = mouseY - rect.top;
+
+  // مختصات جهان (world coordinates) قبل از زوم
+  const worldX = (offsetX + canvasContainer.scrollLeft) / zoomLevel;
+  const worldY = (offsetY + canvasContainer.scrollTop) / zoomLevel;
+
+  // به‌روزرسانی سطح زوم
+  const newZoomLevel = Math.max(minZoom, Math.min(maxZoom, zoomLevel + delta));
+  if (newZoomLevel === zoomLevel) return; // اگر زوم تغییر نکرد، خارج شو
+
+  zoomLevel = newZoomLevel;
+
+  // اعمال زوم
+  canvas.style.transform = `scale(${zoomLevel})`;
+  updateArrows();
+
+  // تنظیم اسکرول برای حفظ موقعیت موس
+  canvasContainer.scrollLeft = worldX * zoomLevel - offsetX;
+  canvasContainer.scrollTop = worldY * zoomLevel - offsetY;
+}
+
+canvasContainer.addEventListener('wheel', (e) => {
+  e.preventDefault();
+  const delta = e.deltaY < 0 ? zoomStep : -zoomStep;
+  zoomCanvas(delta, e.clientX, e.clientY);
+});
+
+// مدیریت toolbar
+document.getElementById('zoom-in').addEventListener('click', () => {
+  // برای زوم با دکمه، از مرکز container استفاده می‌کنیم
+  const rect = canvasContainer.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  zoomCanvas(zoomStep, centerX, centerY);
+});
+
+document.getElementById('zoom-out').addEventListener('click', () => {
+  // برای زوم با دکمه، از مرکز container استفاده می‌کنیم
+  const rect = canvasContainer.getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  zoomCanvas(-zoomStep, centerX, centerY);
+});
+
+// تنظیم موقعیت اولیه اسکرول
+canvasContainer.scrollLeft = 100;
+canvasContainer.scrollTop = 100;
+
 updateArrows();

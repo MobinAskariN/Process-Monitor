@@ -7,7 +7,7 @@ using System;
 namespace Process_Monitor.Models
 {
 
-    [Table("داده های فرآیندی")] 
+    [Table("داده های فرآیندی")]
     public class ProcessData
     {
         [Key]
@@ -50,7 +50,21 @@ namespace Process_Monitor.Models
         [Column("Previous_Parent")]
         public int? previous_process_group { get; set; }
 
-
+        public void Edit_start_method()
+        {
+            if (this.start_method == "کاربر")
+            {
+                this.start_method = "user";
+            }
+            else if (this.start_method == "زیرفرآیند")
+            {
+                this.start_method = "subprocess";
+            }
+            else if (this.start_method == "دوره ای")
+            {
+                this.start_method = "periodic";
+            }
+        }
     }
 
     [Table("گروه بندی")] 

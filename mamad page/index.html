@@ -4,6 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nested Nodes</title>
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
   <div class="child-area">
@@ -25,129 +26,67 @@
     </div>
   </div>
 
-  <div class="canvas">
-    <svg class="arrows" width="100%" height="100%"><defs>
-  <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
-    <polygon points="0 0, 6 2, 0 4" fill="black"></polygon>
-  </marker>
-</defs></svg>
+  <div class="toolbar">
+    <button class="toolbar-btn" id="zoom-in"><i class="fas fa-search-plus"></i></button>
+    <button class="toolbar-btn" id="zoom-out"><i class="fas fa-search-minus"></i></button>
+  </div>
 
-
-
-
-                    <div class="node parent" id="parent-1" style="left: 200px; top: 150px; width: 550px; height: 640px;">
-                مدیریتی و پشتیبان
-                                <div class="node parent" id="parent-2" style="position: absolute; left: 15px; top: 50px;">
-                زیرساخت
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-3" style="position: absolute; left: 15px; top: 170px; width: 525px; height: 400px;">
-                منابع انسانی
-                                <div class="node parent" id="parent-7" style="position: absolute; left: 15px; top: 50px;">
-                آمار و کارکرد
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-8" style="position: absolute; left: 15px; top: 170px;">
-                جذب و استخدام
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-9" style="position: absolute; left: 15px; top: 290px;">
-                انتقال و تسویه
-                
-                <div class="resize-handle"></div>
-            </div>
-
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-4" style="position: absolute; left: 15px; top: 290px;">
-                تامین
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-5" style="position: absolute; left: 15px; top: 410px;">
-                توسعه سیستم
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-6" style="position: absolute; left: 15px; top: 530px;">
-                توسعه فناوری
-                
-                <div class="resize-handle"></div>
-            </div>
-
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-10">
-                اصلی
-                                <div class="node parent" id="parent-11">
-                لجستیک درونی
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-12">
-                عملیات
-                                <div class="node parent" id="parent-16">
-                تحقق محصول
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-17">
-                مهندسی ساخت
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-18">
-                تولید
-                
-                <div class="resize-handle"></div>
-            </div>
-
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-13">
-                لجستیک بیرونی
-                
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-14">
-                فروش 
-                                <div class="node parent" id="parent-20">
-                صدور فاکتور
-                
-                <div class="resize-handle"></div>
-            </div>
-
-                <div class="resize-handle"></div>
-            </div>
-            <div class="node parent" id="parent-15">
-                خدمات پس از فروش
-                                <div class="node parent" id="parent-19">
-                اورهال
-                
-                <div class="resize-handle"></div>
-            </div>
-
-                <div class="resize-handle"></div>
-            </div>
-
-                <div class="resize-handle"></div>
-            </div>
-
-
-
-    
-
-    <div class="tooltip" id="tooltip"></div>
-    <!-- اضافه کردن modal -->
-    <div class="modal" id="modal">
-        <div class="modal-content">
-            <span class="modal-close">×</span>
-            <div id="modal-body"></div>
+  <div class="canvas-container">
+    <div class="canvas" id="canvas">
+      <svg class="arrows" width="100%" height="100%"></svg>
+      <div class="node parent" id="parent-1">
+        Parent Node-1
+        <div class="node parent" id="parent-2">
+          Parent Node-2
+          <div class="node parent" id="parent-3">
+            Parent Node-3
+            <div class="resize-handle"></div>
+          </div>
+          <div class="node parent" id="parent-4">
+            Parent Node-4
+            <div class="resize-handle"></div>
+          </div>
+          <div class="node parent" id="parent-5">
+            Parent Node-5
+            <div class="resize-handle"></div>
+          </div>
+          <div class="resize-handle"></div>
         </div>
+        <div class="resize-handle"></div>
+      </div>
+
+      <div class="node parent" id="parent-6">
+        Parent Node-6
+        <div class="node parent" id="parent-7">
+          Parent Node-7
+          <div class="node parent" id="parent-8">
+            Parent Node-8
+            <div class="resize-handle"></div>
+          </div>
+          <div class="node parent" id="parent-9">
+            Parent Node-9
+            <div class="resize-handle"></div>
+          </div>
+          <div class="node parent" id="parent-10">
+            Parent Node-10
+            <div class="resize-handle"></div>
+          </div>
+          <div class="resize-handle"></div>
+        </div>
+        <div class="resize-handle"></div>
+      </div>
+      
+      <div class="tooltip" id="tooltip"></div>
     </div>
-</div>  <script src="script.js"></script>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <span class="modal-close">×</span>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

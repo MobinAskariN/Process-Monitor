@@ -8,16 +8,18 @@
 @using System.Web
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fa">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Nested Nodes</title>
     <link rel="stylesheet" href="@Url.Content("~/Content/styles.css")?v=@DateTime.Now.Ticks.ToString()">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
+    <button id="save-button" onclick="saveNodePositions()">Save</button>
 
     <div class="child-area">
         <h3>Child Nodes</h3>
@@ -31,7 +33,7 @@
                 {
                     foreach (Process_Monitor.Models.ProcessData p in processData)
                     {
-                        if(p.previous_process_group != p.process_group)
+                        if (p.previous_process_group != p.process_group)
                         {
                             p.x = -1;
                             p.y = -1;
@@ -49,78 +51,93 @@
                             style = "";
                             parentClass = "node child";
                         }
-                        <div class="@parentClass" id="child-@p.process_id.ToString()" data-parent-id="parent-@p.process_group.ToString()" style="@style">@p.process_title</div>
+                        string iconClass = "";
+                        switch (p.start_method)
+                        {
+                            case "subprocess":
+                                iconClass = "fas fa-cogs";
+                                break;
+                            case "user":
+                                iconClass = "fas fa-user";
+                                break;
+                            case "periodic":
+                                iconClass = "fas fa-clock";
+                                break;
+                            default:
+                                iconClass = "fas fa-circle";
+                                break;
+                        }
+                        <div class="@parentClass" id="child-@p.process_id.ToString()" data-parent-id="parent-@p.process_group.ToString()" style="@style"><i class="@iconClass"></i> @p.process_title</div>
                     }
                 }
             }
         </div>
     </div>
 
-    <div class="canvas">
-        <svg class="arrows" width="100%" height="100%">
-            <defs>
-                <marker id="arrowhead" markerWidth="6" markerHeight="4" refX="6" refY="2" orient="auto">
-                    <polygon points="0 0, 6 2, 0 4" fill="black"></polygon>
-                </marker>
-            </defs>
-        </svg>
-        <button id="save-button" onclick="saveNodePositions()">Save</button>
+    <div class="toolbar">
+        <button class="toolbar-btn" id="zoom-in"><i class="fas fa-search-plus"></i></button>
+        <button class="toolbar-btn" id="zoom-out"><i class="fas fa-search-minus"></i></button>
+    </div>
 
-        @helper RenderNodes(List<Process_Monitor.Models.Grouping> items, int? parentId)
-        {
-            List<Process_Monitor.Models.Grouping> children = new List<Process_Monitor.Models.Grouping>();
-            foreach (var item in items)
+    <div class="canvas-container">
+        <div class="canvas" id="canvas">
+            <svg class="arrows" width="100%" height="100%"></svg>
+
+            @helper RenderNodes(List<Process_Monitor.Models.Grouping> items, int? parentId)
             {
-                if (item.parent_id == parentId)
+                List<Process_Monitor.Models.Grouping> children = new List<Process_Monitor.Models.Grouping>();
+                foreach (var item in items)
                 {
-                    children.Add(item);
+                    if (item.parent_id == parentId)
+                    {
+                        children.Add(item);
+                    }
+                }
+
+                if (children.Count == 0)
+                {
+                    if (parentId == null)
+                    {
+                        <p>خطا: هیچ گروه‌بندی ریشه‌ای لود نشده است.</p>
+                    }
+                    return;
+                }
+
+                foreach (var child in children)
+                {
+                    string style = "";
+                    if (child.x != null && child.y != null && child.width != null && child.height != null)
+                    {
+                        style = "position: absolute; left: " + child.x.ToString() + "px; top: " + child.y.ToString() + "px; width: " + child.width.ToString() + "px; height: " + child.height.ToString() + "px;";
+                    }
+                    <div class="node parent" id="parent-@child.group_id.ToString()" style="@style">
+                        @child.group_title
+                        @RenderNodes(items, child.group_id)
+                        <div class="resize-handle"></div>
+                    </div>
                 }
             }
 
-            if (children.Count == 0)
+            @if (grouping == null || grouping.Count == 0)
             {
-                if (parentId == null)
-                {
-                    <p>خطا: هیچ گروه‌بندی ریشه‌ای لود نشده است.</p>
-                }
-                return;
+                <p>خطا: هیچ گروه‌بندی لود نشده است.</p>
             }
-
-            foreach (var child in children)
+            else
             {
-                string style = "";
-                if (child.x != null && child.y != null && child.width != null && child.height != null)
-                {
-                    style = "position: absolute; left: " + child.x.ToString() + "px; top: " + child.y.ToString() + "px; width: " + child.width.ToString() + "px; height: " + child.height.ToString() + "px;";
-                }
-                <div class="node parent" id="parent-@child.group_id.ToString()" style="@style">
-                    @child.group_title
-                    @RenderNodes(items, child.group_id)
-                    <div class="resize-handle"></div>
-                </div>
+                @RenderNodes(grouping, null)
             }
-        }
+            <div class="tooltip" id="tooltip"></div>
 
-        @if (grouping == null || grouping.Count == 0)
-        {
-            <p>خطا: هیچ گروه‌بندی لود نشده است.</p>
-        }
-        else
-        {
-            @RenderNodes(grouping, null)
-        }
-
-        <div class="tooltip" id="tooltip"></div>
-        <div class="modal" id="modal">
-            <div class="modal-content">
-                <span class="modal-close">×</span>
-                <div id="modal-body"></div>
-            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="modal-close">×</span>
+            <div id="modal-body"></div>
         </div>
     </div>
 
     <script>
-
         window.relationships = {};
         @foreach (var r in relation)
         {
@@ -165,7 +182,10 @@
             <text>
             window.childNodeData["@nodeKey"] = {
                 type1: "@item.description_type1",
-                type2: "@item.description_type2"
+                type2: "@item.description_type2",
+                repeatCount: @item.repetition_num,
+                avgTime: "@item.average_duration",
+                processType: "@item.start_method"
             };
             </text>
         }

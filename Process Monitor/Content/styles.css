@@ -4,6 +4,7 @@ body {
 }
 
 .child-area {
+    position: fixed;
     top: 10px;
     left: 10px;
     right: 10px;
@@ -12,6 +13,7 @@ body {
     border-radius: 5px;
     padding: 10px;
     z-index: 1000;
+    text-align: left;
 }
 
     .child-area h3 {
@@ -23,7 +25,7 @@ body {
     flex-wrap: wrap;
     gap: 10px;
     max-width: 1470px;
-    overflow-x: hidden;
+    overflow-x: auto;
     overflow-y: auto;
     max-height: 200px;
 }
@@ -38,18 +40,26 @@ body {
     height: 40px;
     width: 175px;
     user-select: none;
+    display: flex;
+    align-items: center;
+    text-align: right;
+}
+
+.child i {
+    margin-right: 8px;
+    font-size: 16px;
 }
 
 .parent {
     position: absolute;
-    background-color: rgba(16, 185, 129, 0.5); /* سبز روشن */
+    background-color: rgba(16, 185, 129, 0.5);
     min-width: 500px;
     min-height: 100px;
     z-index: 10;
 }
 
 .child {
-    background-color: rgba(255, 99, 71, 0.5); /* قرمز روشن */
+    background-color: rgba(255, 99, 71, 0.5);
     cursor: pointer;
     z-index: 5;
 }
@@ -65,14 +75,24 @@ body {
     z-index: 999;
 }
 
-.canvas {
-    position: relative;
-    width: 100%;
-    height: 700px;
+.canvas-container {
+    position: fixed;
+    top: 260px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    overflow: auto;
     border: 1px solid #ddd;
     background-color: #eaf7ff;
-    margin-top: 10px;
-    overflow: hidden;
+    z-index: 1;
+    direction: ltr; /* برای جلوگیری از مشکلات اسکرول */
+}
+
+.canvas {
+    position: relative;
+    width: 20000px;
+    height: 20000px;
+    transform-origin: 0 0;
 }
 
 .arrows {
@@ -85,6 +105,32 @@ body {
 
     .arrows path {
         pointer-events: stroke;
+    }
+
+.toolbar {
+    position: fixed;
+    top: 220px;
+    left: 10px;
+    display: flex;
+    gap: 10px;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 5px;
+    padding: 5px;
+    z-index: 1000;
+}
+
+.toolbar-btn {
+    background-color: #f0f0f0;
+    border: 1px solid #aaa;
+    border-radius: 3px;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+    .toolbar-btn:hover {
+        background-color: #ddd;
     }
 
 .tooltip {
@@ -101,9 +147,9 @@ body {
     z-index: 30;
     display: none;
     line-height: 1.5;
+    text-align: right;
 }
 
-/* استایل پیش‌فرض modal */
 .modal {
     display: none;
     position: fixed;
@@ -111,7 +157,7 @@ body {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* پس‌زمینه تیره */
+    background-color: rgba(0, 0, 0, 0.5);
     z-index: 40;
 }
 
@@ -128,6 +174,7 @@ body {
     max-width: 400px;
     width: 80%;
     font-family: Arial, sans-serif;
+    text-align: right;
 }
 
 .modal-close {
@@ -140,7 +187,7 @@ body {
 }
 
     .modal-close:hover {
-        color: #ff6347; /* قرمز هماهنگ با child */
+        color: #ff6347;
     }
 
 #save-button {
@@ -152,6 +199,7 @@ body {
     color: white;
     border: none;
     cursor: pointer;
+    z-index: 1001; /* z-index بالا برای اطمینان از نمایش */
 }
 
     #save-button:hover {
