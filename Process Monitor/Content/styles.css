@@ -1,6 +1,8 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f0f0f0;
+    margin: 0;
+    overflow: hidden;
 }
 
 .child-area {
@@ -13,7 +15,6 @@ body {
     border-radius: 5px;
     padding: 10px;
     z-index: 1000;
-    text-align: left;
 }
 
     .child-area h3 {
@@ -25,7 +26,7 @@ body {
     flex-wrap: wrap;
     gap: 10px;
     max-width: 1470px;
-    overflow-x: auto;
+    overflow-x: hidden;
     overflow-y: auto;
     max-height: 200px;
 }
@@ -40,15 +41,20 @@ body {
     height: 40px;
     width: 175px;
     user-select: none;
-    display: flex;
-    align-items: center;
-    text-align: right;
 }
 
-.child i {
-    margin-right: 8px;
-    font-size: 16px;
+.child {
+    background-color: rgba(255, 99, 71, 0.5);
+    cursor: pointer;
+    z-index: 5;
+    display: flex;
+    align-items: center;
 }
+
+    .child i {
+        margin-right: 8px;
+        font-size: 16px;
+    }
 
 .parent {
     position: absolute;
@@ -56,12 +62,6 @@ body {
     min-width: 500px;
     min-height: 100px;
     z-index: 10;
-}
-
-.child {
-    background-color: rgba(255, 99, 71, 0.5);
-    cursor: pointer;
-    z-index: 5;
 }
 
 .resize-handle {
@@ -74,38 +74,6 @@ body {
     cursor: se-resize;
     z-index: 999;
 }
-
-.canvas-container {
-    position: fixed;
-    top: 260px;
-    bottom: 10px;
-    left: 10px;
-    right: 10px;
-    overflow: auto;
-    border: 1px solid #ddd;
-    background-color: #eaf7ff;
-    z-index: 1;
-    direction: ltr; /* برای جلوگیری از مشکلات اسکرول */
-}
-
-.canvas {
-    position: relative;
-    width: 20000px;
-    height: 20000px;
-    transform-origin: 0 0;
-}
-
-.arrows {
-    position: absolute;
-    top: 0;
-    left: 0;
-    z-index: 20;
-    pointer-events: none;
-}
-
-    .arrows path {
-        pointer-events: stroke;
-    }
 
 .toolbar {
     position: fixed;
@@ -133,6 +101,39 @@ body {
         background-color: #ddd;
     }
 
+.canvas-container {
+    position: fixed;
+    top: 260px;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    overflow: auto;
+    border: 1px solid #ddd;
+    background-color: #eaf7ff;
+    z-index: 1;
+}
+
+.canvas {
+    position: relative;
+    width: 20000px;
+    height: 20000px;
+    transform-origin: 0 0;
+}
+
+.arrows {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    pointer-events: none;
+}
+
+    .arrows path {
+        pointer-events: stroke;
+    }
+
 .tooltip {
     position: absolute;
     background-color: rgba(255, 255, 255, 0.95);
@@ -147,7 +148,6 @@ body {
     z-index: 30;
     display: none;
     line-height: 1.5;
-    text-align: right;
 }
 
 .modal {
@@ -155,14 +155,14 @@ body {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 40;
+    z-index: 1001;
 }
 
 .modal-content {
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
@@ -174,7 +174,6 @@ body {
     max-width: 400px;
     width: 80%;
     font-family: Arial, sans-serif;
-    text-align: right;
 }
 
 .modal-close {
@@ -189,7 +188,6 @@ body {
     .modal-close:hover {
         color: #ff6347;
     }
-
 #save-button {
     position: fixed;
     top: 10px;
