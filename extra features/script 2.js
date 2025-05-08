@@ -20,20 +20,6 @@ const minZoom = 0.05;
 const maxZoom = 3;
 const zoomStep = 0.1;
 
-// تابع برای محاسبه عمق parent nodeها و اعمال کلاس CSS
-function assignDepthClasses() {
-    function setDepth(node, depth) {
-        if (node.classList.contains('parent')) {
-            node.classList.add(`depth-${Math.min(depth, 6)}`);
-            const childParents = Array.from(node.children).filter(child => child.classList.contains('parent'));
-            childParents.forEach(child => setDepth(child, depth + 1));
-        }
-    }
-
-    const rootParents = document.querySelectorAll(".canvas > .parent");
-    rootParents.forEach(parent => setDepth(parent, 0));
-}
-
 // تابع برای جابجایی گره‌ها
 function setupDrag(node) {
     let isDragging = false;
@@ -60,21 +46,46 @@ function setupDrag(node) {
             newX = Math.max(0, Math.min(newX, (parentRect.width / zoomLevel) - (nodeRect.width / zoomLevel)));
             newY = Math.max(0, Math.min(newY, (parentRect.height / zoomLevel) - (nodeRect.height / zoomLevel)));
 
-            node.style.left = `${newX}px`;
-            node.style.top = `${newY}px`;
-
+            // بررسی همپوشانی فقط برای child nodeها
+            let isOverlapping = false;
             if (node.classList.contains("child")) {
-                childPositions[node.id] = { x_coor: Math.round(newX), y_coor: Math.round(newY) };
-            } else if (node.classList.contains("parent")) {
-                parentDimensions[node.id] = {
-                    x_coor: Math.round(newX),
-                    y_coor: Math.round(newY),
-                    width: node.offsetWidth,
-                    height: node.offsetHeight
-                };
+                isOverlapping = Array.from(parentNode.children)
+                    .filter(child => child.classList.contains("child") && child !== node)
+                    .some(child => {
+                        const childRect = child.getBoundingClientRect();
+                        const childX = (childRect.left - parentRect.left) / zoomLevel;
+                        const childY = (childRect.top - parentRect.top) / zoomLevel;
+                        const childWidth = childRect.width / zoomLevel;
+                        const childHeight = childRect.height / zoomLevel;
+                        const margin = 5; // فاصله برای جلوگیری از چسبیدن
+
+                        return (
+                            newX < childX + childWidth + margin &&
+                            newX + nodeRect.width / zoomLevel + margin > childX &&
+                            newY < childY + childHeight + margin &&
+                            newY + nodeRect.height / zoomLevel + margin > childY
+                        );
+                    });
             }
 
-            updateArrows();
+            // اعمال موقعیت جدید فقط در صورت عدم همپوشانی (برای child nodeها) یا بدون محدودیت (برای parent nodeها)
+            if (!isOverlapping) {
+                node.style.left = `${newX}px`;
+                node.style.top = `${newY}px`;
+
+                if (node.classList.contains("child")) {
+                    childPositions[node.id] = { x_coor: Math.round(newX), y_coor: Math.round(newY) };
+                } else if (node.classList.contains("parent")) {
+                    parentDimensions[node.id] = {
+                        x_coor: Math.round(newX),
+                        y_coor: Math.round(newY),
+                        width: node.offsetWidth,
+                        height: node.offsetHeight
+                    };
+                }
+
+                updateArrows();
+            }
         }
     });
 
@@ -364,7 +375,7 @@ function updateArrows() {
     const tooltip = document.getElementById("tooltip");
     arrowData.forEach(arrow => {
         const arrowKey = `${arrow.fromNode.id}-${arrow.toNode.id}`;
-        let pathElement = arrowElements.get(arrowKey) ?.pathElement;
+        let pathElement = arrowElements.get(arrowKey)?.pathElement;
         if (!pathElement) {
             pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
             pathElement.setAttribute("stroke", "black");
@@ -712,7 +723,6 @@ function saveNodePositions() {
 
 // اجرای اولیه
 initializePositionsAndDimensions();
-assignDepthClasses(); // اعمال کلاس‌های عمق
 layoutRootParents();
 
 // انتقال child-nodeهای داخل بوم به parent-node مربوطه

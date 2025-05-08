@@ -32,7 +32,6 @@ body {
 }
 
 .node {
-    background-color: #ddd;
     border: 1px solid #aaa;
     border-radius: 5px;
     padding: 10px;
@@ -58,10 +57,38 @@ body {
 
 .parent {
     position: absolute;
-    background-color: rgba(16, 185, 129, 0.5);
     min-width: 500px;
     min-height: 100px;
     z-index: 10;
+}
+
+/* کلاس‌های جدید برای هر عمق */
+.depth-0 {
+    background-color: rgba(16, 185, 129, 0.5); /* سبز ملایم */
+}
+
+.depth-1 {
+    background-color: rgba(255, 99, 71, 0.5); /* قرمز ملایم */
+}
+
+.depth-2 {
+    background-color: rgba(59, 130, 246, 0.5); /* آبی ملایم */
+}
+
+.depth-3 {
+    background-color: rgba(249, 115, 22, 0.5); /* نارنجی ملایم */
+}
+
+.depth-4 {
+    background-color: rgba(147, 51, 234, 0.5); /* بنفش ملایم */
+}
+
+.depth-5 {
+    background-color: rgba(234, 179, 8, 0.5); /* زرد ملایم */
+}
+
+.depth-6 {
+    background-color: rgba(107, 114, 128, 0.5); /* خاکستری ملایم */
 }
 
 .resize-handle {
@@ -188,6 +215,7 @@ body {
     .modal-close:hover {
         color: #ff6347;
     }
+
 #save-button {
     position: fixed;
     top: 10px;
@@ -197,7 +225,7 @@ body {
     color: white;
     border: none;
     cursor: pointer;
-    z-index: 1001; /* z-index بالا برای اطمینان از نمایش */
+    z-index: 1001;
 }
 
     #save-button:hover {
