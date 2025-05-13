@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,11 @@ namespace Process_Monitor.Models
         {
             List<Relations> r = _context.Relation.ToList();
             return r;
+        }
+        public List<Coloring> getColoring()
+        {
+            List<Coloring> c = _context.Coloring.ToList();
+            return c;
         }
 
     }

@@ -3,6 +3,7 @@
     List<ProcessData> processData = ViewBag.processData;
     List<Grouping> grouping = ViewBag.grouping;
     List<Relations> relation = ViewBag.relation;
+    List<Coloring> coloring = ViewBag.coloring;
     Layout = null;
 }
 
@@ -140,6 +141,15 @@
                             };
             </text>
         }
+
+        window.depthColors = { };
+        @foreach (var c in coloring)
+        {
+            <text>
+                window.depthColors[@c.depth] = "@c.color.Replace("(", "").Replace(")", "")";
+            </text>
+        }
+
     </script>
 
     <script src="~/js/script.js" asp-append-version="true"></script>
@@ -176,5 +186,6 @@
                 </div>
             </text>
         }
+
     }
 }

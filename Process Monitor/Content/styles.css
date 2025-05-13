@@ -60,36 +60,22 @@ body {
     min-width: 500px;
     min-height: 100px;
     z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* شروع از بالا */
 }
 
-/* کلاس‌های جدید برای هر عمق */
-.depth-0 {
-    background-color: rgba(16, 185, 129, 0.5); /* سبز ملایم */
-}
+    .parent > *:first-child {
+        text-align: center; /* مرکز افقی */
+        width: 100%; /* عرض کامل برای مرکزسازی */
+        padding: 10px 0; /* فاصله عمودی از بالا */
+        background-color: rgba(0, 0, 0, 0.1); /* پس‌زمینه ملایم برای تمایز */
+        font-weight: bold; /* عنوان برجسته‌تر */
+    }
 
-.depth-1 {
-    background-color: rgba(255, 99, 71, 0.5); /* قرمز ملایم */
-}
-
-.depth-2 {
-    background-color: rgba(59, 130, 246, 0.5); /* آبی ملایم */
-}
-
-.depth-3 {
-    background-color: rgba(249, 115, 22, 0.5); /* نارنجی ملایم */
-}
-
-.depth-4 {
-    background-color: rgba(147, 51, 234, 0.5); /* بنفش ملایم */
-}
-
-.depth-5 {
-    background-color: rgba(234, 179, 8, 0.5); /* زرد ملایم */
-}
-
-.depth-6 {
-    background-color: rgba(107, 114, 128, 0.5); /* خاکستری ملایم */
-}
+    .parent > *:not(:first-child) {
+        flex-grow: 1; /* فضای باقی‌مانده را پر کند */
+    }
 
 .resize-handle {
     position: absolute;

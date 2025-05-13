@@ -23,6 +23,8 @@ namespace Process_Monitor.Controllers
             List<ProcessData> processDatas = _context.getProcessData();
             List<Grouping> groupings = _context.getGrouping();
             List<Relations> relations = _context.getRelations();
+            List<Coloring> colorings = _context.getColoring();
+
 
             foreach (Relations r in relations)
                 r.ExtractParameters();
@@ -34,6 +36,7 @@ namespace Process_Monitor.Controllers
             ViewBag.processData = processDatas;
             ViewBag.grouping = groupings;
             ViewBag.relation = relations;
+            ViewBag.coloring = colorings;
             return View();
         }
 

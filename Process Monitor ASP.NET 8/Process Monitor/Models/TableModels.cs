@@ -143,5 +143,17 @@ namespace Process_Monitor.Models
         }
     }
 
+    [Table("رنگ بندی")]
+    public class Coloring
+    {
+        [Key]
+        [Column("سطح")]
+        public int depth { get; set; }
+
+        [Column("رنگ")]
+        public string color { get; set; }
+    }
+
+
 
 }

@@ -31,6 +31,11 @@ namespace Process_Monitor.Models
             List<Relations> r = _context.Relation.AsNoTracking().ToList();
             return r;
         }
+        public List<Coloring> getColoring()
+        {
+            List<Coloring> c = _context.Coloring.AsNoTracking().ToList();
+            return c;
+        }
 
     }
 }

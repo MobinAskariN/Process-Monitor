@@ -3,6 +3,7 @@
     var processData = ViewBag.processData as List<Process_Monitor.Models.ProcessData>;
     var grouping = ViewBag.grouping as List<Process_Monitor.Models.Grouping>;
     var relation = ViewBag.relation as List<Process_Monitor.Models.Relations>;
+    var coloring = ViewBag.coloring as List<Process_Monitor.Models.Coloring>;
     Layout = null;
 }
 @using System.Web
@@ -83,7 +84,7 @@
         <div class="canvas" id="canvas">
             <svg class="arrows" width="100%" height="100%"></svg>
 
-            @helper RenderNodes(List<Process_Monitor.Models.Grouping> items, int? parentId)
+            @helper RenderNodes(List<Process_Monitor.Models.Grouping> items, int? parentId, int depth = 0)
             {
                 List<Process_Monitor.Models.Grouping> children = new List<Process_Monitor.Models.Grouping>();
                 foreach (var item in items)
@@ -110,9 +111,9 @@
                     {
                         style = "position: absolute; left: " + child.x.ToString() + "px; top: " + child.y.ToString() + "px; width: " + child.width.ToString() + "px; height: " + child.height.ToString() + "px;";
                     }
-                    <div class="node parent" id="parent-@child.group_id.ToString()" style="@style">
+                    <div class="node parent" id="parent-@child.group_id.ToString()" style="@style" data-depth="@depth">
                         @child.group_title
-                        @RenderNodes(items, child.group_id)
+                        @RenderNodes(items, child.group_id, depth + 1)
                         <div class="resize-handle"></div>
                     </div>
                 }
@@ -124,7 +125,7 @@
             }
             else
             {
-                @RenderNodes(grouping, null)
+                @RenderNodes(grouping, null, 0)
             }
             <div class="tooltip" id="tooltip"></div>
 
@@ -189,6 +190,14 @@
             };
             </text>
         }
+
+        window.depthColors = {};
+            @foreach (var c in coloring)
+            {
+                <text>
+                window.depthColors[@c.depth] = "@c.color.Replace("(", "").Replace(")", "")";
+                </text>
+            }
     </script>
 
     <script src="@Url.Content("~/Scripts/script.js")?v=@DateTime.Now.Ticks.ToString()"></script>

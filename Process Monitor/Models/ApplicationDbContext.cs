@@ -23,5 +23,6 @@ namespace Process_Monitor.Models
         public DbSet<ProcessData> ProcessData { get; set; }
         public DbSet<Grouping> Grouping { get; set; }
         public DbSet<Relations> Relation { get; set; }
+        public DbSet<Coloring> Coloring { get; set; }
     }
 }

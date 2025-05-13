@@ -1,40 +1,55 @@
-// متغیرها برای ذخیره موقعیت‌ها و اندازه‌ها
 const childPositions = {};
 const parentDimensions = {};
 
-// تعریف ارتباطات بین child-nodeها
 const relationships = window.relationships;
-
-// تعریف متغیرهای پیش‌فرض برای هر ارتباط
 const relationshipVariables = window.relationshipVariables;
-
-// تعریف اطلاعات پیش‌فرض برای child-nodeها
 const childNodeData = window.childNodeData;
 
-// ذخیره خطوط برای دسترسی مستقیم
 const arrowElements = new Map();
 
-// متغیرهای زوم
 let zoomLevel = 1;
 const minZoom = 0.05;
 const maxZoom = 3;
 const zoomStep = 0.1;
 
-// تابع برای محاسبه عمق parent nodeها و اعمال کلاس CSS
 function assignDepthClasses() {
     function setDepth(node, depth) {
         if (node.classList.contains('parent')) {
-            node.classList.add(`depth-${Math.min(depth, 6)}`);
+            // حذف کلاس‌های depth قبلی برای جلوگیری از تداخل
+            for (let i = 0; i <= 6; i++) {
+                node.classList.remove(`depth-${i}`);
+            }
+            // گرفتن مقدار رنگ
+            let color = window.depthColors[depth] || "107, 114, 128, 1"; // رنگ پیش‌فرض با شفافیت 1
+            // جدا کردن مقادیر RGBA
+            const colorValues = color.split(',').map(val => val.trim());
+            if (colorValues.length === 4) {
+                // اگه RGBA بود، سه مقدار اول RGB و مقدار آخر Alpha هست
+                const [r, g, b, a] = colorValues;
+                node.style.backgroundColor = `rgba(${r}, ${g}, ${b}, ${a})`; // استفاده از شفافیت داخل داده‌ها
+            } else if (colorValues.length === 3) {
+                // اگه RGB بود، شفافیت پیش‌فرض (مثلاً 0.5) رو اعمال می‌کنیم
+                const [r, g, b] = colorValues;
+                node.style.backgroundColor = `rgba(${r}, ${g}, ${b}, 0.5)`;
+            } else {
+                // اگه فرمت ناشناخته بود، رنگ پیش‌فرض
+                node.style.backgroundColor = `rgba(107, 114, 128, 0.5)`;
+            }
+            // پردازش نودهای فرزند
             const childParents = Array.from(node.children).filter(child => child.classList.contains('parent'));
             childParents.forEach(child => setDepth(child, depth + 1));
         }
     }
 
-    const rootParents = document.querySelectorAll(".canvas > .parent");
-    rootParents.forEach(parent => setDepth(parent, 0));
+    const allParents = document.querySelectorAll(".parent");
+    allParents.forEach(parent => {
+        const isRoot = !parent.parentElement.classList.contains('parent');
+        setDepth(parent, isRoot ? 0 : parent.parentElement.dataset.depth ? parseInt(parent.parentElement.dataset.depth) + 1 : 1);
+        parent.dataset.depth = isRoot ? 0 : parseInt(parent.parentElement.dataset.depth) + 1;
+    });
 }
 
-// تابع برای جابجایی گره‌ها
+
 function setupDrag(node) {
     let isDragging = false;
     let offsetX = 0, offsetY = 0;
@@ -87,7 +102,6 @@ function setupDrag(node) {
     });
 }
 
-// تابع برای تغییر اندازه گره‌ها
 function setupResize(handle) {
     let isResizing = false;
     let startX, startY, startWidth, startHeight;
@@ -157,7 +171,6 @@ function setupResize(handle) {
     });
 }
 
-// تابع برای مدیریت z-index
 function updateZIndex(node) {
     node.style.zIndex = "5";
     const parentNode = node.closest('.parent');
@@ -166,20 +179,22 @@ function updateZIndex(node) {
     }
 }
 
-// تابع برای تنظیم سایز parent-node بر اساس محتوای داخلش
 function adjustParentSize(parentNode) {
     const childParents = parentNode.querySelectorAll('.parent');
     childParents.forEach(childParent => adjustParentSize(childParent));
 
     const children = Array.from(parentNode.children).filter(child => child.classList.contains('node'));
+    const existingWidth = parseFloat(parentNode.style.width || parentDimensions[parentNode.id] ?.width || "250");
+    const existingHeight = parseFloat(parentNode.style.height || parentDimensions[parentNode.id] ?.height || "100");
+
     if (children.length === 0) {
-        parentNode.style.width = "250px";
-        parentNode.style.height = "100px";
+        parentNode.style.width = `${existingWidth}px`;
+        parentNode.style.height = `${existingHeight}px`;
         parentDimensions[parentNode.id] = {
             x_coor: Math.round(parseFloat(parentNode.style.left || "0")),
             y_coor: Math.round(parseFloat(parentNode.style.top || "0")),
-            width: 250,
-            height: 100
+            width: existingWidth,
+            height: existingHeight
         };
         return;
     }
@@ -196,8 +211,11 @@ function adjustParentSize(parentNode) {
     });
 
     const padding = 20;
-    const newWidth = Math.max(maxRight + padding, 250);
-    const newHeight = Math.max(maxBottom + padding, 100);
+    const minWidth = Math.max(maxRight + padding, 250);
+    const minHeight = Math.max(maxBottom + padding, 100);
+
+    const newWidth = Math.max(existingWidth, minWidth);
+    const newHeight = Math.max(existingHeight, minHeight);
 
     parentNode.style.width = `${newWidth}px`;
     parentNode.style.height = `${newHeight}px`;
@@ -210,7 +228,6 @@ function adjustParentSize(parentNode) {
     };
 }
 
-// تابع برای تنظیم موقعیت parent-nodeهای فرزند به صورت شبکه‌ای
 function adjustParentPositions(parentNode) {
     const childParents = Array.from(parentNode.children).filter(child => child.classList.contains('parent'));
     if (childParents.length === 0) return;
@@ -255,7 +272,6 @@ function adjustParentPositions(parentNode) {
     adjustParentSize(parentNode);
 }
 
-// تابع برای محاسبه موقعیت بعدی child-node در parent-node
 function getNextPosition(parentNode) {
     const children = Array.from(parentNode.children).filter(child => child.classList.contains('child'));
     const gridSize = 180;
@@ -268,7 +284,6 @@ function getNextPosition(parentNode) {
     return { left: col * gridSize + margin, top: row * (40 + margin) + margin };
 }
 
-// تابع برای رسم خطوط بین child-nodeها
 function drawArrow(fromNode, toNode) {
     const fromRect = fromNode.getBoundingClientRect();
     const toRect = toNode.getBoundingClientRect();
@@ -318,7 +333,6 @@ function drawArrow(fromNode, toNode) {
     return { path, fromNode, toNode };
 }
 
-// تابع برای به‌روزرسانی خطوط
 function updateArrows() {
     const svg = document.querySelector('.arrows');
     svg.innerHTML = '';
@@ -395,7 +409,6 @@ function updateArrows() {
             const canvasRect = canvas.getBoundingClientRect();
             const containerRect = canvasContainer.getBoundingClientRect();
 
-            // محاسبه موقعیت ماوس با در نظر گرفتن اسکرول و زوم
             const x = (e.clientX - containerRect.left + canvasContainer.scrollLeft) / zoomLevel + 10;
             const y = (e.clientY - containerRect.top + canvasContainer.scrollTop) / zoomLevel + 10;
 
@@ -409,7 +422,6 @@ function updateArrows() {
     });
 }
 
-// تابع برای زوم کردن
 function zoomCanvas(delta, mouseX, mouseY) {
     const canvasContainer = document.querySelector('.canvas-container');
     const rect = canvasContainer.getBoundingClientRect();
@@ -432,14 +444,12 @@ function zoomCanvas(delta, mouseX, mouseY) {
     canvasContainer.scrollTop = worldY * zoomLevel - offsetY;
 }
 
-// اعمال توابع به تمام گره‌ها و دسته‌های تغییر اندازه
 const nodes = document.querySelectorAll(".node");
 nodes.forEach(node => setupDrag(node));
 
 const resizeHandles = document.querySelectorAll(".resize-handle");
 resizeHandles.forEach(handle => setupResize(handle));
 
-// تابع برای انتقال child-node به parent-node مربوطه
 function moveChildToParent(childNode, parentNode) {
     parentNode.appendChild(childNode);
     childNode.style.position = "absolute";
@@ -460,7 +470,6 @@ function moveChildToParent(childNode, parentNode) {
     updateArrows();
 }
 
-// تابع برای انتقال child-node از parent-node به لیست
 function moveChildToArea(childNode) {
     const childList = document.querySelector(".child-list");
     childList.appendChild(childNode);
@@ -470,12 +479,10 @@ function moveChildToArea(childNode) {
     updateArrows();
 }
 
-// تابع برای بررسی اینکه آیا child-node به parent-node مربوطه کشیده شده است یا نه
 function isCorrectParent(childNode, parentNode) {
     return childNode.getAttribute("data-parent-id") === parentNode.id;
 }
 
-// اضافه کردن رویدادها به child-nodeها
 const childNodes = document.querySelectorAll(".child");
 childNodes.forEach(childNode => {
     let clickTimeout = null;
@@ -497,7 +504,6 @@ childNodes.forEach(childNode => {
         const canvasRect = canvas.getBoundingClientRect();
         const containerRect = canvasContainer.getBoundingClientRect();
 
-        // محاسبه موقعیت ماوس با در نظر گرفتن اسکرول و زوم
         const x = (e.clientX - containerRect.left + canvasContainer.scrollLeft) / zoomLevel + 10;
         const y = (e.clientY - containerRect.top + canvasContainer.scrollTop) / zoomLevel + 10;
 
@@ -561,7 +567,6 @@ childNodes.forEach(childNode => {
     });
 });
 
-// تابع برای نمایش modal (بدون انیمیشن)
 function showModal(content) {
     const modal = document.getElementById("modal");
     const modalBody = document.getElementById("modal-body");
@@ -569,19 +574,16 @@ function showModal(content) {
     modal.style.display = "block";
 }
 
-// بستن modal با کلیک روی دکمه بسته شدن
 document.querySelector(".modal-close").onclick = function () {
     document.getElementById("modal").style.display = "none";
 };
 
-// بستن modal با کلیک خارج از آن
 document.getElementById("modal").onclick = function (e) {
     if (e.target === document.getElementById("modal")) {
         document.getElementById("modal").style.display = "none";
     }
 };
 
-// رویدادهای زوم
 const canvasContainer = document.querySelector('.canvas-container');
 
 document.getElementById('zoom-in').addEventListener('click', () => {
@@ -598,7 +600,6 @@ document.getElementById('zoom-out').addEventListener('click', () => {
     zoomCanvas(-zoomStep, centerX, centerY);
 });
 
-// تابع برای تنظیم موقعیت‌های child-nodeها و parent-nodeها
 function initializePositionsAndDimensions() {
     const childNodes = document.querySelectorAll(".child");
     childNodes.forEach(child => {
@@ -618,7 +619,6 @@ function initializePositionsAndDimensions() {
     });
 }
 
-// تابع برای تنظیم موقعیت parent-nodeهای ریشه
 function layoutRootParents() {
     const rootParents = document.querySelectorAll(".canvas > .parent");
     let startX = 50;
@@ -671,7 +671,6 @@ function layoutRootParents() {
     }
 }
 
-// تابع برای ذخیره موقعیت‌ها
 function saveNodePositions() {
     const processUpdates = [];
     for (const id in childPositions) {
@@ -710,31 +709,28 @@ function saveNodePositions() {
     });
 }
 
-// اجرای اولیه
-initializePositionsAndDimensions();
-assignDepthClasses(); // اعمال کلاس‌های عمق
-layoutRootParents();
+document.addEventListener('DOMContentLoaded', () => {
+    initializePositionsAndDimensions();
+    assignDepthClasses();
+    layoutRootParents();
 
-// انتقال child-nodeهای داخل بوم به parent-node مربوطه
-const childNodesInCanvas = document.querySelectorAll(".child.in-canvas");
-childNodesInCanvas.forEach(childNode => {
-    const parentId = childNode.getAttribute("data-parent-id");
-    const targetParent = document.getElementById(parentId);
-    if (targetParent) {
-        moveChildToParent(childNode, targetParent);
-        childNode.classList.remove("in-canvas");
-    }
+    const childNodesInCanvas = document.querySelectorAll(".child.in-canvas");
+    childNodesInCanvas.forEach(childNode => {
+        const parentId = childNode.getAttribute("data-parent-id");
+        const targetParent = document.getElementById(parentId);
+        if (targetParent) {
+            moveChildToParent(childNode, targetParent);
+            childNode.classList.remove("in-canvas");
+        }
+    });
+
+    const rootParents = document.querySelectorAll(".canvas > .parent");
+    rootParents.forEach(rootParent => adjustParentSize(rootParent));
+
+    setTimeout(updateArrows, 300);
 });
 
-// تنظیم سایز parent-nodeها
-const rootParents = document.querySelectorAll(".canvas > .parent");
-rootParents.forEach(rootParent => adjustParentSize(rootParent));
-
-// به‌روزرسانی خطوط
-setTimeout(updateArrows, 300);
-
-// تنظیم اسکرول اولیه به سمت چپ
 window.onload = function () {
     const canvasContainer = document.querySelector('.canvas-container');
-    canvasContainer.scrollLeft = 0; // اسکرول به سمت چپ
+    canvasContainer.scrollLeft = 0;
 };
