@@ -62,20 +62,26 @@ body {
     z-index: 10;
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* شروع از بالا */
+    justify-content: flex-start;
+    border: 1px solid #aaa;
+    border-radius: 5px;
 }
 
-    .parent > *:first-child {
-        text-align: center; /* مرکز افقی */
-        width: 100%; /* عرض کامل برای مرکزسازی */
-        padding: 10px 0; /* فاصله عمودی از بالا */
-        background-color: rgba(0, 0, 0, 0.1); /* پس‌زمینه ملایم برای تمایز */
-        font-weight: bold; /* عنوان برجسته‌تر */
-    }
+.parent-title {
+    text-align: center;
+    width: 100%;
+    padding: 10px 0;
+    background-color: rgba(0, 0, 0, 0.1);
+    font-weight: bold;
+    border-bottom: 1px solid #aaa;
+    box-sizing: border-box;
+    flex-shrink: 0;
+    margin: 0;
+}
 
-    .parent > *:not(:first-child) {
-        flex-grow: 1; /* فضای باقی‌مانده را پر کند */
-    }
+.parent > *:not(.parent-title) {
+    flex-grow: 1;
+}
 
 .resize-handle {
     position: absolute;
